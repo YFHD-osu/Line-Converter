@@ -14,11 +14,12 @@ var pageController = PageController(
 class ErrorBoxControllerObject {
   double height ;
   String errorLore;
-  ErrorBoxControllerObject (this.height, this.errorLore);
+  Color color;
+  ErrorBoxControllerObject (this.height, this.errorLore, this.color);
 }
 
-var morningErrorBoxController = ErrorBoxControllerObject(0, "");
-var afternoonErrorBoxController = ErrorBoxControllerObject(0, "");
+var morningErrorBoxController = ErrorBoxControllerObject(0, "", Colors.red.shade50);
+var afternoonErrorBoxController = ErrorBoxControllerObject(0, "", Colors.red.shade50);
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
