@@ -126,7 +126,9 @@ class showDataClass {
                               alignment: Alignment.topLeft,
                               margin: EdgeInsets.fromLTRB(5, 5, 0, 0),
                               child: TextButton(
-                                  onPressed: () {Navigator.pop(context);},
+                                  onPressed: () {
+                                    Navigator.pop(context, 0);
+                                  },
                                   child: Text('關閉', style: TextStyle(color: Colors.green[500], fontSize: 20, fontWeight: FontWeight.bold ))
                               ),
                             ),
@@ -135,7 +137,9 @@ class showDataClass {
                               margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
                               child: TextButton(
                                   onPressed: !(saveLocal._status || uploadGoogle._status) ? null : (){
-
+                                    if(uploadGoogle._status == true && saveLocal._status == false) {Navigator.pop(context, 1);}
+                                    else if (uploadGoogle._status == false && saveLocal._status == true) {Navigator.pop(context, 2);}
+                                    else {Navigator.pop(context, 3);}
                                   },
                                   child: Text('執行', style: (saveLocal._status || uploadGoogle._status) ? TextStyle(color: Colors.green[500], fontSize: 20, fontWeight: FontWeight.bold ) : TextStyle(color: Colors.grey[500], fontSize: 20, fontWeight: FontWeight.bold ))
                               ),
@@ -253,5 +257,3 @@ class showDataClass {
     return endCode;
   }
 }
-
-
