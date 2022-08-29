@@ -2,53 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_line_message_converter/main.dart';
 import '../stringPorcesser.dart';
+import 'informationDialog.dart';
+import '../dataManager.dart';
+import '../gsheet.dart';
+import 'processDialog.dart';
+import 'package:async/async.dart';
+import 'package:gsheets/gsheets.dart';
+import 'dart:convert';
 
-var afternoonPersonTextBoxController = TextEditingController();
-var afternoonCarTextBoxController = TextEditingController();
 
-class AfternoonPersonTextBox extends StatefulWidget {
-  const AfternoonPersonTextBox({Key? key}) : super(key: key);
+var afternoonOrderTextBoxController = TextEditingController();
+var afternoonCarTextBoxController =  TextEditingController();
 
+class AfternoonCarTextBox extends StatefulWidget {
+  const AfternoonCarTextBox({Key? key}) : super(key: key,);
   @override
-  State<AfternoonPersonTextBox> createState() => _AfternoonPersonTextBoxState();
+  State<AfternoonCarTextBox> createState() => _AfternoonCarTextBoxState();
 }
 
-class _AfternoonPersonTextBoxState extends State<AfternoonPersonTextBox> {
-  /*
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the widget tree.
-    widget.afternoonPersonTextBoxController!.dispose();
-    super.dispose();
-  }
-   */
+class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.all(12),
-            height: 10 * 24.0,
-            child: TextField(
-              controller: afternoonPersonTextBoxController,
-              style: TextStyle(
-                fontSize: 18,
-              ),
-              maxLines: 10,
-              decoration: InputDecoration(
-                hintText: "輸入車次、人名等訊息串",
-                fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                filled: true,
-
-              ),
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+          height: MediaQuery.of(context).size.height/2 -120,
+          child: TextField(
+            controller: afternoonCarTextBoxController,
+            style: const TextStyle(fontSize: 18),
+            maxLines: 10,
+            decoration: InputDecoration(
+              hintText: "輸入車次、人名等訊息串",
+              fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+              filled: true,
             ),
           ),
-
+        ),
         Container(
+          height: MediaQuery.of(context).size.height/2 -120,
           alignment: Alignment.bottomRight,
-          margin: const EdgeInsets.fromLTRB(0, 200, 20, 0),
+          margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
             style: TextButton.styleFrom(
               textStyle: const TextStyle(fontSize: 20),
@@ -56,14 +51,10 @@ class _AfternoonPersonTextBoxState extends State<AfternoonPersonTextBox> {
               backgroundColor: Colors.green[500],
             ),
             onPressed: () {Clipboard.getData(Clipboard.kTextPlain).then((value){
-              afternoonPersonTextBoxController.text = value!.text ?? ' ';
+              afternoonCarTextBoxController.text = value!.text ?? ' ';
             });
             },
-            child: const Text('貼上剪貼簿',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                )
+            child: const Text('貼上剪貼簿', style: TextStyle(color: Colors.white, fontSize: 18)
             ),
           ),
         ),
@@ -72,48 +63,40 @@ class _AfternoonPersonTextBoxState extends State<AfternoonPersonTextBox> {
   }
 }
 
-class AfternoonCarTextBox extends StatefulWidget {
-  const AfternoonCarTextBox({Key? key}) : super(key: key,);
+class AfternoonOrderTextBox extends StatefulWidget {
+  const AfternoonOrderTextBox({Key? key}) : super(key: key);
 
   @override
-  State<AfternoonCarTextBox> createState() => _AfternoonCarTextBoxState();
+  State<AfternoonOrderTextBox> createState() => _AfternoonOrderTextBoxState();
 }
 
-class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
-  /*
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    widget.afternoonCarTextBoxController!.dispose();
-    super.dispose();
-  }
-   */
+class _AfternoonOrderTextBoxState extends State<AfternoonOrderTextBox> {
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Container(
-          margin: EdgeInsets.all(12),
-          height: 10 * 24.0,
+          margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+          height: MediaQuery.of(context).size.height/2 -120,
           child: TextField(
-            controller: afternoonCarTextBoxController,
-            style: TextStyle(
+            controller: afternoonOrderTextBoxController,
+            style: const TextStyle(
               fontSize: 18,
             ),
             maxLines: 10,
             decoration: InputDecoration(
+              hintText: "輸入車次順序訊息串",
               fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-              hintText: "輸入車次、車號等訊息串",
               filled: true,
             ),
           ),
         ),
 
         Container(
+          height: MediaQuery.of(context).size.height/2 -120,
           alignment: Alignment.bottomRight,
-          margin: const EdgeInsets.fromLTRB(0, 200, 20, 0),
+          margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
             style: TextButton.styleFrom(
               textStyle: const TextStyle(fontSize: 20),
@@ -121,7 +104,7 @@ class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
               backgroundColor: Colors.green[500],
             ),
             onPressed: () {Clipboard.getData(Clipboard.kTextPlain).then((value){
-              afternoonCarTextBoxController.text = value?.text ?? ' ';
+              afternoonOrderTextBoxController.text = value!.text ?? ' ';
             });
             },
             child: const Text('貼上剪貼簿',
@@ -138,7 +121,7 @@ class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
 }
 
 class AfternoonParserPage extends StatefulWidget {
-  const AfternoonParserPage({Key? key , required this.errorBoxController}) : super(key: key,);
+  const AfternoonParserPage({Key? key ,required this.errorBoxController}) : super(key: key,);
 
   final ErrorBoxControllerObject errorBoxController;
 
@@ -147,41 +130,39 @@ class AfternoonParserPage extends StatefulWidget {
 }
 
 class _AfternoonParserPageState extends State<AfternoonParserPage> {
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: (){FocusScope.of(context).unfocus();},
       child: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Column(
-          children: [
-            Container(
-              child: Text(''),
-              height: MediaQuery.of(context).viewPadding.top,
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
-              child: Center(
-                  child: Text('晚班車表轉換',
-                    style: TextStyle(
-                      letterSpacing: 2.0,
-                      fontSize: 35,
-                    ),
-                  )
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                height: 60,
+                width: MediaQuery.of(context).size.width - 20,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).inputDecorationTheme.fillColor,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+                  child: Text('下午車表轉換', style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+                )
               ),
-            ),
-
-            AnimatedContainer(
+              AnimatedContainer(
                 curve: Curves.easeInOut,
-                duration: Duration(
+                duration: const Duration(
                   milliseconds: 500,
                 ),
                 height: widget.errorBoxController.height,
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: DecoratedBox(
                     decoration: BoxDecoration(
-                        color: Colors.red[50],
-                        borderRadius: BorderRadius.all(Radius.circular(20))
+                        color: widget.errorBoxController.color,
+                        borderRadius: const BorderRadius.all(Radius.circular(20))
                     ),
                     child: Stack(
                       children: [
@@ -201,8 +182,11 @@ class _AfternoonParserPageState extends State<AfternoonParserPage> {
                                   primary: Colors.red[500],
                                   fixedSize: const Size.fromWidth(30)
                               ),
-                              child: Text('\u{274C}',
-                                textAlign: TextAlign.center,),
+                              child: const Text('\u{274C}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 15
+                                ),),
                               onPressed: () {
                                 setState(() {
                                   widget.errorBoxController.height = 0;
@@ -212,43 +196,63 @@ class _AfternoonParserPageState extends State<AfternoonParserPage> {
                         ),
                       ],
                     )
-                )
-            ),
-            AfternoonCarTextBox(),
-            AfternoonPersonTextBox(),
-            Container(
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: TextButton(
-                style: TextButton.styleFrom(
+                  )
+              ),
+              AfternoonCarTextBox(),
+              AfternoonOrderTextBox(),
+              Container(
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20),
                     primary: Colors.white,
                     backgroundColor: Colors.green[500]
-                ),
-                onPressed: () async {
-                  var result = await processStringAfternoon(afternoonPersonTextBoxController.text, afternoonCarTextBoxController.text);
-                  setState(() {
-                    widget.errorBoxController.height = 0;
-                  });
-                  if (!mounted) return;
-                  if (result.runtimeType == int){
-                    if (result == 1){
+                  ),
+                  onPressed: () async {
+                    var result = await processStringAfternoon(afternoonCarTextBoxController.text, afternoonOrderTextBoxController.text);
+                    setState(() {widget.errorBoxController.height = 0;});
+                    if (!mounted) return;
+                    if (result.runtimeType == int){
                       setState(() {
-                        widget.errorBoxController.errorLore = "兩個訊息欄位都為必填!";
-                        widget.errorBoxController.height = 35;
+                        switch (result){
+                          case 1:
+                            widget.errorBoxController.errorLore = "兩個訊息欄位都為必填!";
+                            widget.errorBoxController.height = 35;
+                            break;
+                          case 2:
+                            widget.errorBoxController.errorLore = "請檢查資訊是否完整或貼反!";
+                            widget.errorBoxController.height = 35;
+                            break;
+                        }
                       });
                     }
-                  }
-                },
-                child: const Text('開始轉換',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    )
+                    else{
+                      var showDataObject = showDataClass(result, context);
+                      var endCode = await showDataObject.showData();
+
+                      /* Code Lore:
+                          0 = 啥都不做
+                          1 = 上傳船單
+                          2 = 儲存到本機
+                          3 = 樣樣都來
+                       */
+                      if (endCode == 0 || endCode == null) {return;}
+
+                      var processDataObject = processDialogClass(context, endCode, result);
+                      processDataObject.showProcessDialog();
+
+                    }
+                  },
+                  child: const Text('開始轉換',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      )
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ]
+          )
       ),
     );
   }

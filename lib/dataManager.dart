@@ -1,76 +1,81 @@
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:async/async.dart';
+
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
   return directory.path;
 }
 
-Future<File> _getFile (String floder ,String filename) async {
+Future<File> _getFile (String folder ,String filename) async {
+  final dir = Directory('${await _localPath}/$folder');
+  if ((await dir.exists()) == false) { await dir.create(recursive: true); }
   final path = await _localPath;
-  return File('$path/$floder/$filename.txt');
+  return File('$path/$folder/$filename');
 }
 
-void writeData (Map dataBase) async {
-  var file;
+void writeFile (Map dataBase) async {
+  DateTime now = DateTime.now();
 
-  if (dataBase['carOrder'] == null){final file = await _getFile('morningData', 'asd');}
-  else{ final file = await _getFile('afternoonData', 'asd');}
+  var file;
+  if (dataBase['carOrder'] == null){
+    now = now.add(const Duration(days: 1));
+    String dateString = '${now.year}-${now.month}-${now.day}-${now.weekday}-am-';
+    file = await _getFile('carDatas', dateString);
+  }
+  else{
+    String dateString = '${now.year}-${now.month}-${now.day}-${now.weekday}-pm-';
+    file = await _getFile('carDatas', dateString);
+  }
 
   file.writeAsString(json.encode(dataBase));
 }
-Future<int> readCounter(String floder, String filename) async {
-  try {
-    final file = await await _getFile(floder, filename);
-    // Read the file
-    final contents = await file.readAsString();
 
-    return int.parse(contents);
+Future<List> listFiles(String folder) async {
+  final dir = Directory('${await _localPath}/$folder');
+  if ((await dir.exists()) == false) { await dir.create(recursive: true); }
+  final List<FileSystemEntity> entities = await dir.list().toList();
+  return(entities);
+}
+
+Future<String> readFile(String folder, String filename) async {
+  try {
+    final file = await _getFile(folder, filename);
+    final contents = await file.readAsString();
+    return contents;
   } catch (e) {
-    // If encountering an error, return 0
-    return 0;
+    return '';
   }
 }
 
-void listFiles() async {
-  final dir = Directory(await _localPath);
-  final List<FileSystemEntity> entities = await dir.list().toList();
-  print(entities);
+void deleteFile(String folder, String filename) async {
+  final file = await _getFile(folder, filename);
+  await file.delete();
 }
 
+Map<String, int> dirStatSync(String dirPath) {
+  int fileNum = 0;
+  int totalSize = 0;
+  var dir = Directory(dirPath);
+  try {
+    if (dir.existsSync()) {
+      dir.listSync(recursive: true, followLinks: false)
+          .forEach((FileSystemEntity entity) {
+        if (entity is File) {
+          fileNum++;
+          totalSize += entity.lengthSync();
+        }
+      });
+    }
+  } catch (e) {
+    print(e.toString());
+  }
 
-
-Future<String?> _myFuture() async {
-  await Future.delayed(const Duration(seconds: 5));
-  return 'Future completed';
+  return {'fileNum': fileNum, 'size': totalSize};
 }
 
-// keep a reference to CancelableOperation
-CancelableOperation? _myCancelableFuture;
-
-// This is the result returned by the future
-String? _text;
-
-// Help you know whether the app is "loading" or not
-bool _isLoading = false;
-
-// This function is called when the "start" button is pressed
-void _getData() async {
-    _isLoading = true;
-    _myCancelableFuture = CancelableOperation.fromFuture(_myFuture(), onCancel: () => 'Future has been canceld',
-  );
-
-  final value = await _myCancelableFuture?.value;
-  // update the UI
-    _text = value;
-    _isLoading = false;
-}
-
-// this function is called when the "cancel" button is tapped
-void _cancelFuture() async {
-  final result = await _myCancelableFuture?.cancel();
-  _text = result;
-  _isLoading = false;
+void DeleteFloder (String folder) async {
+  final dir = Directory('${await _localPath}/$folder');
+  dir.deleteSync(recursive: true);
 }
