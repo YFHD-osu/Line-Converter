@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 //copy by https://stackoverflow.com/questions/57131978/how-to-animate-alert-dialog-position-in-flutter buttonControlClass {
 
-
-
 class buttonControlClass{
   var _decorationShape;
   var _status;
@@ -29,7 +27,7 @@ class buttonControlClass{
 
 List<Widget> GetWidgetList (Map dataBase, var context) {
   List<Widget> previewData = [];
-  List<int> carOrder = [];
+  List<dynamic> carOrder = [];
 
   if(dataBase['carOrder'] == null){
     for (int i=1; i<= dataBase.length; i++){
@@ -37,9 +35,8 @@ List<Widget> GetWidgetList (Map dataBase, var context) {
     }
   }else {carOrder = dataBase['carOrder'];}
 
-  for(int i=1; i<= carOrder.length; i++){
-    String key = i.toString();
-
+  for(int i=0; i<carOrder.length; i++){
+    String key = carOrder[i].toString();
     previewData.add(
       Container(
         margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -51,12 +48,12 @@ List<Widget> GetWidgetList (Map dataBase, var context) {
         child: Column(
           children: [
             Container(
-              child: Text('|$key車| ${dataBase[key]['Come_ID']} ', style: Theme.of(context).textTheme.labelLarge),
+              child: Text('|$key車| ${dataBase[key]['carID']} ', style: Theme.of(context).textTheme.labelLarge),
               alignment: Alignment.topLeft,
               margin: EdgeInsets.fromLTRB(15, 10, 5, 0),
             ),
             Container(
-              child: Text('|乘客| ${dataBase[key]['Come_Person']}', style: Theme.of(context).textTheme.labelMedium),
+              child: Text('|乘客| ${dataBase[key]['person']}', style: Theme.of(context).textTheme.labelMedium),
               alignment: Alignment.topLeft,
               margin: EdgeInsets.fromLTRB(15, 0, 5, 10),
             ),
@@ -232,14 +229,14 @@ class showDataClass {
                           ),
                         ),
                         Expanded(
-                            child: Material(
-                              color: Theme.of(context).inputDecorationTheme.fillColor,
-                              borderRadius: BorderRadius.circular(15),
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: SingleChildScrollView(
-                                child: Column(children: previewData),
-                              ),
-                            )
+                          child: Material(
+                            color: Theme.of(context).inputDecorationTheme.fillColor,
+                            borderRadius: BorderRadius.circular(15),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: SingleChildScrollView(
+                              child: Column(children: previewData),
+                            ),
+                          )
 
                         ),
                         const SizedBox(height: 10)

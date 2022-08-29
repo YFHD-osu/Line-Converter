@@ -7,7 +7,6 @@ class ThemeProvider extends ChangeNotifier {
   var themeMode;
 
   ThemeProvider (this.darkMode) {
-
     List<ThemeMode> tMs = [ThemeMode.system, ThemeMode.light, ThemeMode.dark];
     themeMode = tMs[darkMode];
   }
@@ -39,12 +38,13 @@ class ThemeDatas {
     brightness: Brightness.dark,
     primaryColor: Colors.white,
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold, ),
       labelSmall: TextStyle(color: Colors.white, fontSize: 15.0),
       labelMedium: TextStyle(color: Colors.white, fontSize: 20.0),
       labelLarge: TextStyle(color: Colors.white, fontSize: 25.0),
       titleLarge: TextStyle(color: Colors.white, fontSize: 40.0),
-      titleMedium: TextStyle(color: Colors.white, fontSize: 25),
+      titleMedium: TextStyle(color: Colors.white, fontSize: 30),
+      titleSmall: TextStyle(color: Colors.white, fontSize: 25),
     ),
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.grey[800],
@@ -68,7 +68,8 @@ class ThemeDatas {
       labelMedium: TextStyle(color: Colors.black, fontSize: 20.0),
       labelLarge: TextStyle(color: Colors.black, fontSize: 25.0),
       titleLarge: TextStyle(color: Colors.black, fontSize: 40.0),
-      titleMedium: TextStyle(color: Colors.black, fontSize: 25),
+      titleMedium: TextStyle(color: Colors.black, fontSize: 30),
+      titleSmall: TextStyle(color: Colors.black, fontSize: 25),
     ),
 
     inputDecorationTheme: InputDecorationTheme(

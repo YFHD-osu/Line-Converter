@@ -4,21 +4,15 @@ import 'package:flutter_line_message_converter/main.dart';
 import '../stringPorcesser.dart';
 import 'informationDialog.dart';
 import '../dataManager.dart';
+import '../gsheet.dart';
+import 'processDialog.dart';
+import 'package:async/async.dart';
+import 'package:gsheets/gsheets.dart';
+import 'dart:convert';
+
 
 var morningPersonTextBoxController = TextEditingController();
 var morningCarTextBoxController = TextEditingController();
-
-class ProgressBarControllerClass {
-  double height;
-  String lore;
-
-  ProgressBarControllerClass(this.height, this.lore){
-    height = height;
-    lore = lore;
-  }
-}
-
-var progressBarController = ProgressBarControllerClass(40, "");
 
 class MorningPersonTextBox extends StatefulWidget {
   const MorningPersonTextBox({Key? key}) : super(key: key);
@@ -34,7 +28,7 @@ class _MorningPersonTextBoxState extends State<MorningPersonTextBox> {
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.all(12),
+          margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           height: MediaQuery.of(context).size.height/2 -120,
           child: TextField(
             controller: morningPersonTextBoxController,
@@ -50,9 +44,10 @@ class _MorningPersonTextBoxState extends State<MorningPersonTextBox> {
           ),
         ),
 
-        Positioned(
-          right: 20,
-          bottom: 15,
+        Container(
+          height: MediaQuery.of(context).size.height/2 -120,
+          alignment: Alignment.bottomRight,
+          margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
             style: TextButton.styleFrom(
               textStyle: const TextStyle(fontSize: 20),
@@ -78,10 +73,9 @@ class _MorningPersonTextBoxState extends State<MorningPersonTextBox> {
 
 class MorningCarTextBox extends StatefulWidget {
   const MorningCarTextBox({Key? key}) : super(key: key,);
-
   @override
   State<MorningCarTextBox> createState() => _MorningCarTextBoxState();
-}
+  }
 
 class _MorningCarTextBoxState extends State<MorningCarTextBox> {
 
@@ -90,7 +84,7 @@ class _MorningCarTextBoxState extends State<MorningCarTextBox> {
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.all(12),
+          margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           height: MediaQuery.of(context).size.height/2 -120,
           child: TextField(
             controller: morningCarTextBoxController,
@@ -105,9 +99,10 @@ class _MorningCarTextBoxState extends State<MorningCarTextBox> {
             ),
           ),
         ),
-        Positioned(
-          right: 20,
-          bottom: 15,
+        Container(
+          height: MediaQuery.of(context).size.height/2 -120,
+          alignment: Alignment.bottomRight,
+          margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
             style: TextButton.styleFrom(
               textStyle: const TextStyle(fontSize: 20),
@@ -128,7 +123,6 @@ class _MorningCarTextBoxState extends State<MorningCarTextBox> {
 }
 
 class MorningParserPage extends StatefulWidget {
-
   const MorningParserPage({Key? key ,required this.errorBoxController}) : super(key: key,);
 
   final ErrorBoxControllerObject errorBoxController;
@@ -139,8 +133,6 @@ class MorningParserPage extends StatefulWidget {
 
 class _MorningParserPageState extends State<MorningParserPage> {
 
-  double testValue = 0;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -149,85 +141,39 @@ class _MorningParserPageState extends State<MorningParserPage> {
           child: Column(
               children: [
                 Container(
-                  height: MediaQuery.of(context).viewPadding.top,
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                  child: const Center(
-                      child: Text('早班車表轉換',
-                        style: TextStyle(
-                          letterSpacing: 2.0,
-                          fontSize: 35,
-                        ),
-                      )
+                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                  height: 60,
+                  width: MediaQuery.of(context).size.width - 20,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).inputDecorationTheme.fillColor,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                ),
-                AnimatedContainer(
-                    curve: Curves.easeInOut,
-                    duration: const Duration(
-                      milliseconds: 500,
-                    ),
-                    height: widget.errorBoxController.height,
-                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: widget.errorBoxController.color,
-                          borderRadius: const BorderRadius.all(Radius.circular(20))
-                      ),
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: Text(widget.errorBoxController.errorLore ,
-                                style: TextStyle(
-                                    color: Colors.red[500],
-                                    fontSize: 21,
-                                    backgroundColor: Colors.red[50]
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                                width: 50,
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                      primary: Colors.red[500],
-                                      fixedSize: const Size.fromWidth(30)
-                                  ),
-                                  child: const Text('\u{274C}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 15
-                                    ),),
-                                    onPressed: () {
-                                    setState(() {
-                                      widget.errorBoxController.height = 0;
-                                    });
-                                  },
-                                )
-                              ),
-                            ],
-                        )
-                    )
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+                    child: Text('早上車表轉換', style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+                  )
                 ),
                 AnimatedContainer(
                   curve: Curves.easeInOut,
                   duration: const Duration(
                     milliseconds: 500,
                   ),
-                  height: progressBarController.height,
+                  height: widget.errorBoxController.height,
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: Colors.blue[100],
-                          borderRadius: const BorderRadius.all(Radius.circular(20))
-                      ),
+                    decoration: BoxDecoration(
+                        color: widget.errorBoxController.color,
+                        borderRadius: const BorderRadius.all(Radius.circular(20))
+                    ),
                       child: Stack(
                         children: [
                           Center(
-                            child: Text(progressBarController.lore ,
+                            child: Text(widget.errorBoxController.errorLore ,
                               style: TextStyle(
-                                  color: Colors.blue[500],
+                                  color: Colors.red[500],
                                   fontSize: 21,
-                                  backgroundColor: Colors.blue[50]
+                                  backgroundColor: Colors.red[50]
                               ),
                             ),
                           ),
@@ -235,30 +181,22 @@ class _MorningParserPageState extends State<MorningParserPage> {
                               width: 50,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                    primary: Colors.blue[500],
+                                    primary: Colors.red[500],
                                     fixedSize: const Size.fromWidth(30)
                                 ),
-                                child: Text('取消',
+                                child: const Text('\u{274C}',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15, color: Colors.blue[800]),),
+                                  style: TextStyle(
+                                    fontSize: 15
+                                  ),),
                                   onPressed: () {
-                                    setState(() {
-                                      testValue += 0.1;
-
-                                      progressBarController.height = 40;
-                                    });
-                                  },
+                                  setState(() {
+                                    widget.errorBoxController.height = 0;
+                                  });
+                                },
                               )
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(15, 37, 15, 0),
-                            child: LinearProgressIndicator(
-                              value: testValue,
-                              semanticsLabel: 'Linear progress indicator',
                             ),
-                          )
-
-                        ],
+                          ],
                       )
                   )
                 ),
@@ -274,9 +212,7 @@ class _MorningParserPageState extends State<MorningParserPage> {
                     ),
                     onPressed: () async {
                       var result = await processStringMorning(morningPersonTextBoxController.text, morningCarTextBoxController.text);
-                      setState(() {
-                        widget.errorBoxController.height = 0;
-                      });
+                      setState(() {widget.errorBoxController.height = 0;});
                       if (!mounted) return;
                       if (result.runtimeType == int){
                         setState(() {
@@ -295,19 +231,18 @@ class _MorningParserPageState extends State<MorningParserPage> {
                       else{
                         var showDataObject = showDataClass(result, context);
                         var endCode = await showDataObject.showData();
+
                         /* Code Lore:
                             0 = 啥都不做
                             1 = 上傳船單
                             2 = 儲存到本機
                             3 = 樣樣都來
                          */
-                        switch(endCode){
-                          case 1:
-                            break;
-                          case 2:
+                        if (endCode == 0 || endCode == null) {return;}
 
+                        var processDataObject = processDialogClass(context, endCode, result);
+                        processDataObject.showProcessDialog();
 
-                        }
                       }
                     },
                     child: const Text('開始轉換',

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_line_message_converter/pages/DataPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_line_message_converter/Pages/afternoonPage.dart';
@@ -6,6 +8,7 @@ import 'provider/themeProvider.dart';
 import 'Pages/settingsPage.dart';
 import 'Pages/morningPage.dart';
 import 'Pages/afternoonPage.dart';
+import 'pages/DataPage.dart';
 
 var pageController = PageController(
   initialPage: 0,
@@ -35,12 +38,30 @@ class MyApp extends StatelessWidget {
   }
 
   @override
+
   Widget build(BuildContext context) => ChangeNotifierProvider(
     create: (context) => ThemeProvider(themeCode),
     builder: (context, _) {
       final themeProvider = Provider.of<ThemeProvider>(context);
 
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+
       return MaterialApp(
+        builder: (context, child) {
+          // Obtain the current media query information.
+          final mediaQueryData = MediaQuery.of(context);
+
+          return MediaQuery(
+            // Set the default textScaleFactor to 1.0 for
+            // the whole subtree.
+            data: mediaQueryData.copyWith(textScaleFactor: 1.0),
+            child: child!,
+          );
+        },
+
         themeMode: themeProvider.themeMode,
         theme: ThemeDatas.lightTheme,
         darkTheme: ThemeDatas.darkTheme,
@@ -78,7 +99,7 @@ class _AppState extends State<App> {
         AfternoonParserPage(errorBoxController: afternoonErrorBoxController),
       ],
     ),
-    Text('data'),
+    DataPage(),
     SettingPage(),
 
   ];
