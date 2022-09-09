@@ -163,21 +163,25 @@ class showDataClass {
                                       borderRadius: BorderRadius.circular(13),
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              saveLocal.toggle(context);
-                                            });
-                                          },
-                                          child: Stack(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  const Center(child: Icon(Icons.save, size: 135,)),
-                                                  Center(child: Text('儲存到本機', style: Theme.of(context).textTheme.titleMedium))
-                                                ],
-                                              ),
-                                            ],
-                                          )
+                                        onTap: () {
+                                          setState(() {
+                                            saveLocal.toggle(context);
+                                          });
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.topCenter,
+                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
+                                              child: Center(child: Icon(Icons.save, size:60 * MediaQuery.of(context).devicePixelRatio)),
+                                            ),
+                                            Container(
+                                              alignment: Alignment.bottomCenter,
+                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                              child: Text(/**/"本機儲存", style: Theme.of(context).textTheme.titleMedium),
+                                            )
+                                          ],
+                                        )
                                       ),
                                     )
                                 ),
@@ -203,12 +207,18 @@ class showDataClass {
                                           },
                                           child: Stack(
                                             children: [
-                                              Column(
-                                                children: [
-                                                  const Center(child: Icon(Icons.cloud_upload, size: 135,)),
-                                                  Center(child: Text('上傳至表單', style: Theme.of(context).textTheme.titleMedium))
-                                                ],
+                                              Container(
+                                                alignment: Alignment.topCenter,
+                                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                                                width: (MediaQuery.of(context).size.width - 15) / 2,
+                                                height: (MediaQuery.of(context).size.width - 15) / 2,
+                                                child: Center(child: Icon(Icons.cloud_upload, size: 60 * MediaQuery.of(context).devicePixelRatio)),
                                               ),
+                                              Container(
+                                                alignment: Alignment.bottomCenter,
+                                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                                child: Text(/**/ '雲端上傳', style: Theme.of(context).textTheme.titleMedium),
+                                              )
                                             ],
                                           )
                                       ),

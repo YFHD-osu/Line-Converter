@@ -75,39 +75,36 @@ class _ThemeSettingsRouteState extends State<ThemeSettingsRoute> {
       body: Center(
         child: Column(
           children: [
-            Hero(
-              tag: 'themeSettingsHero',
-              child: Stack(
-                children: [
-                  Container(
-                      margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).inputDecorationTheme.fillColor,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
-                          child: Center(child: Text('佈景主題', style: Theme.of(context).textTheme.titleLarge),)
-                      )
-                  ),
-                  Container(
-                      margin: const EdgeInsets.fromLTRB(15, 16, 0, 10),
-                      child: Material(
-                        clipBehavior: Clip.hardEdge,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            Stack(
+              children: [
+                Container(
+                    margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                    height: 60,
+                    decoration: BoxDecoration(
                         color: Theme.of(context).inputDecorationTheme.fillColor,
-                        child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(Icons.arrow_back_ios_rounded)
-                        ),
-                      )
-                  )
-                ],
-              )
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
+                        child: Center(child: Text('佈景主題', style: Theme.of(context).textTheme.titleLarge),)
+                    )
+                ),
+                Container(
+                    margin: const EdgeInsets.fromLTRB(15, 16, 0, 10),
+                    child: Material(
+                      clipBehavior: Clip.hardEdge,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                      color: Theme.of(context).inputDecorationTheme.fillColor,
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back_ios_rounded)
+                      ),
+                    )
+                )
+              ],
             ),
             Column(
               children: [

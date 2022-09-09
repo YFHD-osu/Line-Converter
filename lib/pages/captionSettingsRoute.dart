@@ -79,6 +79,7 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                   child: Material(
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     borderRadius: BorderRadius.circular(15),
                     child: SingleChildScrollView(
@@ -165,24 +166,20 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                               color: Theme.of(context).inputDecorationTheme.fillColor,
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            child: Row(
+                            child: Column(
                               children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: Text('|進階| 回復設定', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
-                                      margin: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: Text(' 快速套用設定過的資訊', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
-                                      margin: EdgeInsets.fromLTRB(12, 0, 0, 5),
-                                    ),
-                                  ],
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: Text('|進階| 回復設定', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+                                  margin: EdgeInsets.fromLTRB(12, 0, 0, 0),
                                 ),
                                 Container(
-                                  alignment: Alignment.centerRight,
+                                  alignment: Alignment.center,
+                                  child: Text(' 快速套用設定過的資訊', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
+                                  margin: EdgeInsets.fromLTRB(12, 0, 0, 5),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
                                   margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
                                   padding: EdgeInsets.all(5),
                                   child: ElevatedButton(
@@ -213,50 +210,45 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                           ),
                           Container(
                               width: MediaQuery.of(context).size.width - 20,
-                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).inputDecorationTheme.fillColor,
                                 borderRadius: BorderRadius.circular(15),),
-                              child: Row(
+                              child: Column(
                                 children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: Text(' |進階| 刪除全部', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
-                                        margin: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: Text('|進階| 刪除全部', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+                                  margin: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: Text('刪除所有的本機資訊', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
+                                  margin: EdgeInsets.fromLTRB(12, 0, 0, 5),
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(5),
+                                  child: ElevatedButton(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15.0),
+                                          side: BorderSide(color: Colors.red)
+                                        )
                                       ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        child: Text(' 刪除所有的本機資訊', style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
-                                        margin: EdgeInsets.fromLTRB(12, 0, 0, 5),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                    padding: EdgeInsets.all(5),
-                                    child: ElevatedButton(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                  side: BorderSide(color: Colors.red)
-                                              )
-                                          ),
-                                          backgroundColor: MaterialStateProperty.resolveWith((states) {return Colors.red[500];})
-                                      ),
-                                      onPressed: () {
-
-                                      },
-                                      onLongPress: () {
-                                        DeleteFloder('carDatas');
-                                      },
-                                      child: const Text('長按刪除', style: TextStyle(color: Colors.white)),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) {return Colors.red[500];})
                                     ),
-                                  )
+                                    onPressed: () {
+
+                                    },
+                                    onLongPress: () {
+                                      DeleteFloder('carDatas');
+                                    },
+                                    child: const Text('長按刪除', style: TextStyle(color: Colors.white)),
+                                  ),
+                                )
+
                                 ],
                               )
                           ),

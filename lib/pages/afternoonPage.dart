@@ -20,7 +20,34 @@ class AfternoonCarTextBox extends StatefulWidget {
   State<AfternoonCarTextBox> createState() => _AfternoonCarTextBoxState();
 }
 
-class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
+class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> with WidgetsBindingObserver{
+  // disfocous keyboard on app is in background
+  @override
+  initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      FocusScope.of(context).unfocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +55,7 @@ class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           child: TextField(
             controller: afternoonCarTextBoxController,
             style: const TextStyle(fontSize: 18),
@@ -41,7 +68,7 @@ class _AfternoonCarTextBoxState extends State<AfternoonCarTextBox> {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           alignment: Alignment.bottomRight,
           margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
@@ -78,7 +105,7 @@ class _AfternoonOrderTextBoxState extends State<AfternoonOrderTextBox> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           child: TextField(
             controller: afternoonOrderTextBoxController,
             style: const TextStyle(
@@ -94,7 +121,7 @@ class _AfternoonOrderTextBoxState extends State<AfternoonOrderTextBox> {
         ),
 
         Container(
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           alignment: Alignment.bottomRight,
           margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(

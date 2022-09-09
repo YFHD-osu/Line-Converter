@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter_line_message_converter/dataManager.dart';
 import 'package:flutter_line_message_converter/gsheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_line_message_converter/dataManager.dart';
-
 import 'package:provider/provider.dart';
 import 'package:flutter_line_message_converter/provider/themeProvider.dart';
 
@@ -120,6 +119,7 @@ class _DetailDataRouteState extends State<DetailDataRoute> {
               child: SizedBox(
                 height: MediaQuery.of(context).size.height - 226,
                 child: Material(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   borderRadius: BorderRadius.circular(15),
                   child: SingleChildScrollView(

@@ -1,8 +1,8 @@
 Future<dynamic> processStringAfternoon (String carMessage, String orderMessage) async {
   if (orderMessage == "" || carMessage == "") return 1;
 
-  carMessage.replaceAll(" ", "");
-  orderMessage.replaceAll(" ", "");
+  carMessage = carMessage.replaceAll(" ", "").replaceAll("，", "、");
+  orderMessage = orderMessage.replaceAll(" ", "").replaceAll("，", "、");
 
   List<String> carList = carMessage.split('\n');
   List<dynamic> orderList = orderMessage.split('、');
