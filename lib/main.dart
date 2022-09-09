@@ -33,6 +33,7 @@ void main() async{
 class MyApp extends StatelessWidget {
   int themeCode;
 
+
   MyApp(this.themeCode, {Key? key}) : super(key: key){
     themeCode = themeCode;
   }
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
           return MediaQuery(
             // Set the default textScaleFactor to 1.0 for
             // the whole subtree.
-            data: mediaQueryData.copyWith(textScaleFactor: 1.0),
+            data: mediaQueryData.copyWith(textScaleFactor: 1),
             child: child!,
           );
         },
@@ -120,53 +121,56 @@ class _AppState extends State<App> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.add),
-            label: '加入',
-            activeIcon: Container(
-              width: 50,
-              height: 30,
-              decoration: activeDecoration,
-              child: const Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.checklist_outlined),
-            label: '顯示',
-            activeIcon: Container(
-              width: 50,
-              height: 30,
-              decoration: activeDecoration,
-              child: const Icon(
-                Icons.checklist_outlined,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: '設定',
-            activeIcon: Container(
-              width: 50,
-              height: 30,
-              decoration: activeDecoration,
-              child: const Icon(
-                  Icons.settings,
+      bottomNavigationBar: SizedBox(
+        height: 60,
+        child: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: const SizedBox(child: Icon(Icons.add)),
+              label: '加入',
+              activeIcon: Container(
+                width: 50,
+                height: 26,
+                decoration: activeDecoration,
+                child: const Icon(
+                  Icons.add,
                   color: Colors.black,
-                  ),
                 ),
               ),
-            ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-      ),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.checklist_outlined),
+              label: '顯示',
+              activeIcon: Container(
+                width: 50,
+                height: 26,
+                decoration: activeDecoration,
+                child: const Icon(
+                  Icons.checklist_outlined,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.settings),
+              label: '設定',
+              activeIcon: Container(
+                width: 50,
+                height: 26,
+                decoration: activeDecoration,
+                child: const Icon(
+                  Icons.settings,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.green[800],
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+        ),
+      )
     );
   }
 }

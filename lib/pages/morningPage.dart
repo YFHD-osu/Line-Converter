@@ -29,7 +29,7 @@ class _MorningPersonTextBoxState extends State<MorningPersonTextBox> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           child: TextField(
             controller: morningPersonTextBoxController,
             style: const TextStyle(
@@ -45,7 +45,7 @@ class _MorningPersonTextBoxState extends State<MorningPersonTextBox> {
         ),
 
         Container(
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           alignment: Alignment.bottomRight,
           margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
@@ -85,7 +85,7 @@ class _MorningCarTextBoxState extends State<MorningCarTextBox> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           child: TextField(
             controller: morningCarTextBoxController,
             style: const TextStyle(
@@ -100,7 +100,7 @@ class _MorningCarTextBoxState extends State<MorningCarTextBox> {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height/2 -120,
+          height: MediaQuery.of(context).size.height/2 -115,
           alignment: Alignment.bottomRight,
           margin: const EdgeInsets.fromLTRB(0, 0, 17, 0),
           child: TextButton(
@@ -129,9 +129,38 @@ class MorningParserPage extends StatefulWidget {
 
   @override
   State<MorningParserPage> createState() => _MorningParserPageState();
+
 }
 
-class _MorningParserPageState extends State<MorningParserPage> {
+class _MorningParserPageState extends State<MorningParserPage> with WidgetsBindingObserver{
+
+  // disfocous keyboard on app is in background
+  @override
+  initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      FocusScope.of(context).unfocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,11 +189,11 @@ class _MorningParserPageState extends State<MorningParserPage> {
                     milliseconds: 500,
                   ),
                   height: widget.errorBoxController.height,
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                         color: widget.errorBoxController.color,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))
+                        borderRadius: const BorderRadius.all(Radius.circular(15))
                     ),
                       child: Stack(
                         children: [
@@ -206,9 +235,9 @@ class _MorningParserPageState extends State<MorningParserPage> {
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: TextButton(
                     style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 20),
-                        primary: Colors.white,
-                        backgroundColor: Colors.green[500]
+                      textStyle: const TextStyle(fontSize: 20),
+                      primary: Colors.white,
+                      backgroundColor: Colors.green[500]
                     ),
                     onPressed: () async {
                       var result = await processStringMorning(morningPersonTextBoxController.text, morningCarTextBoxController.text);
