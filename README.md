@@ -1,16 +1,13 @@
-# flutter_line_message_converter
+# Line 訊息轉換 手機APP
 
-Auto Message Converter (AMC) on Flutter Test
+## Auto Message Converter (AMC) on Flutter Test
 
-## Getting Started
+## 簡介
+這項專案是由我媽媽的公司所啟發，因為公司每天會在Line群組裡傳送早、晚班的街車表
+但在上車點名時看著密密麻麻的訊息屬實不太方便，於是我藉著公司訊息的格式相同，
+寫了一個簡易的訊息轉換器。
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 功能
+(1) 新增早晚班車訊息
+(2) 查看儲存於本機的資料
+(3) 將早晚班車訊息上傳至Google表單
