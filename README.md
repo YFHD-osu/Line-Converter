@@ -1,6 +1,5 @@
 # Line 訊息轉換 手機APP
-
-## Auto Message Converter (AMC) on Flutter Test
+Auto Message Converter (AMC) on Flutter
 
 ## 簡介
 這項專案是由我媽媽的公司所啟發，因為公司每天會在Line群組裡傳送早、晚班的街車表
@@ -8,6 +7,6 @@
 寫了一個簡易的訊息轉換器。
 
 ## 功能
-(1) 新增早晚班車訊息
-(2) 查看儲存於本機的資料
-(3) 將早晚班車訊息上傳至Google表單
+ (1) 新增早晚班車訊息
+ (2) 查看儲存於本機的資料
+ (3) 將早晚班車訊息上傳至Google表單
