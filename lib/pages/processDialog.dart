@@ -89,7 +89,7 @@ class processDialogClass {
       barrierLabel: '',
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
-          position: Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim1),
+          position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(anim1),
           child: child,
         );
       },
@@ -105,7 +105,7 @@ class processDialogClass {
                 margin: const  EdgeInsets.only(bottom: 0, left: 0, right: 0, top: 0),
                 decoration: BoxDecoration(
                   color: Theme.of(context).inputDecorationTheme.fillColor,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
                 ),
                 child: Column(
                   children: [

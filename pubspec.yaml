@@ -41,6 +41,7 @@ dependencies:
   path_provider: ^2.0.11
   encrypted_shared_preferences: ^3.0.1
   flutter_native_splash: ^2.2.8
+  flutter_keyboard_visibility: ^5.4.0
 
 dev_dependencies:
   flutter_test:

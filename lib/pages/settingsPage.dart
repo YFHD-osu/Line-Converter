@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'themeSettingsRoute.dart';
-import 'certificateSettingsRoute.dart';
-import 'captionSettingsRoute.dart';
+import '../routes/themeSettingsRoute.dart';
+import '../routes/certificateSettingsRoute.dart';
+import '../routes/captionSettingsRoute.dart';
+import '../routes/highlightSettingsRoute.dart';
 
 
 class SettingPage extends StatefulWidget {
@@ -55,8 +56,8 @@ class _SettingPageState extends State<SettingPage>{
                       label: Text(' 佈景主題', style: Theme.of(context).textTheme.labelMedium),
                       style: ElevatedButton.styleFrom(
                         surfaceTintColor: Theme.of(context).inputDecorationTheme.fillColor,
-                        primary: Theme.of(context).inputDecorationTheme.fillColor,
-                        onPrimary : Theme.of(context).primaryColor,
+                        backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
+                        foregroundColor: Theme.of(context).primaryColor,
                         alignment: Alignment.centerLeft,
                         shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15)
                         ),
@@ -75,16 +76,38 @@ class _SettingPageState extends State<SettingPage>{
                       onPressed: () {Navigator.push(context,MaterialPageRoute(builder: (context) => const SheeetSettingsRoute()));},
                       icon: const Icon(Icons.document_scanner_outlined,
                         size: 32,),
-                      label: Text(' 表單設定', style: Theme.of(context).textTheme.labelMedium),
+                      label: Text(' 上傳設定', style: Theme.of(context).textTheme.labelMedium),
                       style: ElevatedButton.styleFrom(
                         surfaceTintColor: Theme.of(context).inputDecorationTheme.fillColor,
-                        primary: Theme.of(context).inputDecorationTheme.fillColor,
-                        onPrimary : Theme.of(context).primaryColor,
+                        backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
+                        foregroundColor : Theme.of(context).primaryColor,
                         alignment: Alignment.centerLeft,
                         shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15)
                         ),
                       )
                     )
+                  ),
+                  Container( // 佈景主題按鈕
+                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      height: 60,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).inputDecorationTheme.fillColor,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      child: ElevatedButton.icon(
+                          onPressed: () {Navigator.push(context,MaterialPageRoute(builder: (context) => const HighlightSettingsRoute()));},
+                          icon: const Icon(Icons.person_add, size: 32,),
+                          label: Text(' 醒目標示', style: Theme.of(context).textTheme.labelMedium),
+                          style: ElevatedButton.styleFrom(
+                            surfaceTintColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            foregroundColor: Theme.of(context).primaryColor,
+                            alignment: Alignment.centerLeft,
+                            shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15)
+                            ),
+                          )
+                      )
                   ),
                   Container( // 使用說明按鈕
                     margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -101,8 +124,8 @@ class _SettingPageState extends State<SettingPage>{
                         label: Text(' 使用說明', style: Theme.of(context).textTheme.labelMedium),
                         style: ElevatedButton.styleFrom(
                           surfaceTintColor: Theme.of(context).inputDecorationTheme.fillColor,
-                          primary: Theme.of(context).inputDecorationTheme.fillColor,
-                          onPrimary : Theme.of(context).primaryColor,
+                          backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
+                          foregroundColor: Theme.of(context).primaryColor,
                           alignment: Alignment.centerLeft,
                           shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15)
                           ),
