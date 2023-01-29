@@ -51,8 +51,8 @@ class ThemeDatas {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
         borderSide: const BorderSide(color: Colors.green),
-        )
-      ),
+      )
+    ),
 
     colorScheme: const ColorScheme.dark(),
     useMaterial3: true,

@@ -67,6 +67,8 @@ class _ThemeSettingsRouteState extends State<ThemeSettingsRoute> {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(const AssetImage("assets/darkThemeSample.png"), context);
+    precacheImage(const AssetImage('assets/lightThemeSample.png'), context);
     return Scaffold(
       appBar: AppBar(
           elevation: 0,

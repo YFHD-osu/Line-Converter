@@ -7,8 +7,8 @@ import 'package:flutter_line_message_converter/Pages/afternoonPage.dart';
 import 'provider/themeProvider.dart';
 import 'Pages/settingsPage.dart';
 import 'Pages/morningPage.dart';
-import 'Pages/afternoonPage.dart';
-import 'pages/DataPage.dart';
+// import 'Pages/afternoonPage.dart';
+// import 'pages/DataPage.dart';
 
 var pageController = PageController(
   initialPage: 0,
@@ -32,14 +32,11 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   int themeCode;
-
-
   MyApp(this.themeCode, {Key? key}) : super(key: key){
     themeCode = themeCode;
   }
 
   @override
-
   Widget build(BuildContext context) => ChangeNotifierProvider(
     create: (context) => ThemeProvider(themeCode),
     builder: (context, _) {
@@ -97,7 +94,7 @@ class _AppState extends State<App> {
 
       children: [
         MorningParserPage(errorBoxController: morningErrorBoxController),
-        AfternoonParserPage(errorBoxController: afternoonErrorBoxController),
+        afternoonParserPage(errorBoxController: afternoonErrorBoxController),
       ],
     ),
     DataPage(),
@@ -113,63 +110,67 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 0
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: SizedBox(
-        height: 60,
-        child: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: const SizedBox(child: Icon(Icons.add)),
-              label: '加入',
-              activeIcon: Container(
-                width: 50,
-                height: 26,
-                decoration: activeDecoration,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.black,
+    return SafeArea(
+      bottom: true,
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+              elevation: 0,
+              toolbarHeight: 0
+          ),
+          body: Center(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+          bottomNavigationBar: SizedBox(
+            height: 60,
+            child: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: const SizedBox(child: Icon(Icons.add)),
+                  label: '加入',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.checklist_outlined),
-              label: '顯示',
-              activeIcon: Container(
-                width: 50,
-                height: 26,
-                decoration: activeDecoration,
-                child: const Icon(
-                  Icons.checklist_outlined,
-                  color: Colors.black,
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.checklist_outlined),
+                  label: '顯示',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.checklist_outlined,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.settings),
-              label: '設定',
-              activeIcon: Container(
-                width: 50,
-                height: 26,
-                decoration: activeDecoration,
-                child: const Icon(
-                  Icons.settings,
-                  color: Colors.black,
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.settings),
+                  label: '設定',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.settings,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.green[800],
+              unselectedItemColor: Colors.grey,
+              onTap: _onItemTapped,
             ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.green[800],
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-        ),
+          )
       )
     );
   }

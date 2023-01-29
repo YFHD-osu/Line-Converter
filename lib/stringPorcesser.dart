@@ -1,8 +1,8 @@
 Future<dynamic> processStringAfternoon (String carMessage, String orderMessage) async {
   if (orderMessage == "" || carMessage == "") return 1;
 
-  carMessage = carMessage.replaceAll(" ", "").replaceAll("，", "、");
-  orderMessage = orderMessage.replaceAll(" ", "").replaceAll("，", "、");
+  carMessage = carMessage.replaceAll(" ", "").replaceAll("，", "、").replaceAll(",", "、");
+  orderMessage = orderMessage.replaceAll(" ", "").replaceAll("，", "、").replaceAll(",", "、");
 
   List<String> carList = carMessage.split('\n');
   List<dynamic> orderList = orderMessage.split('、');
@@ -26,7 +26,7 @@ Future<dynamic> processStringAfternoon (String carMessage, String orderMessage) 
   for (int i = 0; i < (carList.length - 1); i += 2) {
     tmpList = carList[i].split("車回");
     processDatabase[tmpList[0]] = {'carID': tmpList[1]};
-    tmpList2 = carList[i + 1].split("，");
+    tmpList2 = carList[i + 1].split("、");
     processDatabase[tmpList[0]]['person'] = tmpList2;
   }
 

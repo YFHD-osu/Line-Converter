@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'detailDataRoute.dart';
+import '../routes/detailDataRoute.dart';
 import 'package:flutter_line_message_converter/dataManager.dart';
 
 class DataPage extends StatefulWidget {
@@ -29,7 +29,7 @@ class _DataPageState extends State<DataPage> {
       _key.currentState!.insertItem(i, duration: const Duration(milliseconds:100));
     }
     setState(() {
-      _listIsReady = (_items.length == 0) ? true : false;
+      _listIsReady = (_items.isEmpty) ? true : false;
     });
 
   }
@@ -52,7 +52,7 @@ class _DataPageState extends State<DataPage> {
           ),
         ),
       );
-    }, duration: const Duration(milliseconds: 750));
+    }, duration: const Duration(milliseconds: 500));
     _items.removeAt(index);
   }
 
@@ -81,7 +81,7 @@ class _DataPageState extends State<DataPage> {
           ),
           _listIsReady ? Center(child: Text('尚無資料', style: Theme.of(context).textTheme.labelMedium,),) :
           Container(
-            margin: EdgeInsets.fromLTRB(10, 80, 10, 0),
+            margin: const EdgeInsets.fromLTRB(10, 80, 10, 0),
             alignment: Alignment.bottomCenter,
             child: Material(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -98,42 +98,44 @@ class _DataPageState extends State<DataPage> {
                       children: [
                         Hero(
                           tag: 'tag-${_items[index][1]}-${_items[index][2]}-${_items[index][3]}-${_items[index][4]}-${_items[index][0]}-',
-                          child: Material(
-                            borderRadius: BorderRadius.circular(15),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    Navigator.push(context,MaterialPageRoute(builder: (context) => DetailDataRoute(fileName: _items[index])));
-                                  },
-                                  onLongPress: () { _removeItem(index); },
-                                  child: Stack(
-                                    children: [
-                                      Ink.image(
-                                        image: (_items[index][4] == 'am') ? const AssetImage('assets/img_breakfast.jpg') : const AssetImage('assets/img_cyclingbmx.jpg'),
-                                        height: (MediaQuery.of(context).size.width - 20) * 250 / 1010,
-                                        width: MediaQuery.of(context).size.width - 20,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                        child: Text(
-                                          '${_items[index][0]}年${_items[index][1]}月${_items[index][2]}日 (${weekString[int.parse(_items[index][3])]})',
-                                          style: Theme.of(context).textTheme.titleSmall,),
-                                      ),
-                                      Container(
-                                        height: (MediaQuery.of(context).size.width - 20) * 250 / 1010,
-                                        alignment: Alignment.bottomLeft,
-                                        padding: EdgeInsets.fromLTRB(45, 0, 0, 1),
-                                        child: Text((_items[index][4] == 'am') ? '早班車' : '晚班車', style: Theme.of(context).textTheme.titleMedium,),
-                                      )
-                                    ],
-                                  )
-                                ),
-                              ],
-                            )
-                          ),
+                          child: SingleChildScrollView(
+                            child: Material(
+                              borderRadius: BorderRadius.circular(15),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      Navigator.push(context,MaterialPageRoute(builder: (context) => DetailDataRoute(fileName: _items[index])));
+                                    },
+                                    onLongPress: () { _removeItem(index); },
+                                    child: Stack(
+                                      children: [
+                                        Ink.image(
+                                          image: (_items[index][4] == 'am') ? const AssetImage('assets/img_breakfast.jpg') : const AssetImage('assets/img_cyclingbmx.jpg'),
+                                          height: (MediaQuery.of(context).size.width - 20) * 250 / 1010,
+                                          width: MediaQuery.of(context).size.width - 20,
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Container(
+                                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                          child: Text(
+                                            '${_items[index][0]}年${_items[index][1]}月${_items[index][2]}日 (${weekString[int.parse(_items[index][3])]})',
+                                            style: Theme.of(context).textTheme.titleSmall,),
+                                        ),
+                                        Container(
+                                          height: (MediaQuery.of(context).size.width - 20) * 250 / 1010 - 5,
+                                          alignment: Alignment.bottomLeft,
+                                          margin: const EdgeInsets.fromLTRB(35, 0, 0, 5),
+                                          child: Text((_items[index][4] == 'am') ? '早班車' : '晚班車', style: Theme.of(context).textTheme.titleMedium,),
+                                        )
+                                      ],
+                                    )
+                                  ),
+                                ],
+                              )
+                            ),
+                          )
                         ),
                         const SizedBox(height: 10),
                       ],

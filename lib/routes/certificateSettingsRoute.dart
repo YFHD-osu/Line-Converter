@@ -52,39 +52,35 @@ class _SheeetSettingsRouteState extends State<SheeetSettingsRoute> {
           onTap: () { FocusScope.of(context).unfocus(); },
           child: Column(
             children: [
-              Hero(
-                tag: 'sheetSettingsHero',
-                child: Stack(
-                  children: [
-                    Container(
-                        margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).inputDecorationTheme.fillColor,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        child: Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
-                            child: Center(child: Text('表單設定', style: Theme.of(context).textTheme.titleLarge))
-                        )
-                    ),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(15, 16, 0, 10),
-                        child: Material(
-                          clipBehavior: Clip.hardEdge,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+              Stack(
+                children: [
+                  Container(
+                      margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                      height: 60,
+                      decoration: BoxDecoration(
                           color: Theme.of(context).inputDecorationTheme.fillColor,
-                          child: IconButton(
-                              onPressed: () { Navigator.pop(context); },
-                              icon: Icon(Icons.arrow_back_ios_rounded)
-                          ),
-                        )
-                    )
-                  ],
-                )
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
+                          child: Center(child: Text('上傳設定', style: Theme.of(context).textTheme.titleLarge))
+                      )
+                  ),
+                  Container(
+                      margin: EdgeInsets.fromLTRB(15, 16, 0, 10),
+                      child: Material(
+                        clipBehavior: Clip.hardEdge,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                        color: Theme.of(context).inputDecorationTheme.fillColor,
+                        child: IconButton(
+                            onPressed: () { Navigator.pop(context); },
+                            icon: Icon(Icons.arrow_back_ios_rounded)
+                        ),
+                      )
+                  )
+                ],
               ),
-
               Expanded(
                 child: Container(
                   width: MediaQuery.of(context).size.width - 20,
@@ -93,6 +89,7 @@ class _SheeetSettingsRouteState extends State<SheeetSettingsRoute> {
                     borderRadius: BorderRadius.circular(15),
                     clipBehavior: Clip.antiAlias,
                     child: SingleChildScrollView(
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       child: Column(
                         children: [
                           Container(
@@ -163,31 +160,27 @@ class _SheeetSettingsRouteState extends State<SheeetSettingsRoute> {
                                   shape: BoxShape.rectangle,
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: TextField(
-                                      controller: MasterTextEditingController.certificate,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ),
-                                      maxLines: 10,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                          borderSide: BorderSide(
-                                              color: Colors.green.shade600,
-                                              width: 15
-                                          ),
-                                        ),
-                                        hintText: 'Google Cloud Platform 憑證',
-                                        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                                        filled: true,
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                child: TextField(
+                                  controller: MasterTextEditingController.certificate,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                  maxLines: 10,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide: BorderSide(
+                                          color: Colors.green.shade600,
+                                          width: 15
                                       ),
                                     ),
+                                    hintText: 'Google Cloud Platform 憑證',
+                                    fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                                    filled: true,
                                   ),
-                                ],
+                                ),
                               )
                           ),
                         ],
@@ -249,7 +242,7 @@ class _SheeetSettingsRouteState extends State<SheeetSettingsRoute> {
               ],
             ),
           )
-        ),
+        )
     );
   }
 }
