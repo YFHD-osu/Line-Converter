@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import '../gsheet.dart';
-import '../dataManager.dart';
-import 'package:async/async.dart';
-import 'dart:convert';
-import 'package:gsheets/gsheets.dart';
+import '../Library/Gsheet.dart';
+import '../Library/DataManager.dart';
 
 class ProgressBarController {
   double value ;
@@ -267,64 +263,5 @@ class processDialogClass {
   }
   );
   return endCode;
-
 }
-
 }
-
-/*
-AnimatedContainer(
-  curve: Curves.easeInOut,
-  duration: const Duration(
-    milliseconds: 500,
-  ),
-  height: progressBarController.height,
-  margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-  child: DecoratedBox(
-      decoration: BoxDecoration(
-          color: Colors.blue[100],
-          borderRadius: const BorderRadius.all(Radius.circular(20))
-      ),
-      child: Stack(
-        children: [
-          Center(
-            child: Text(progressBarController.lore ,
-              style: TextStyle(
-                  color: Colors.blue[500],
-                  fontSize: 21,
-                  backgroundColor: Colors.blue[50]
-              ),
-            ),
-          ),
-          SizedBox(
-              width: 50,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                    primary: Colors.blue[500],
-                    fixedSize: const Size.fromWidth(30)
-                ),
-                child: Text('取消',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: Colors.blue[800]),),
-                  onPressed: () {
-                    setState(() {
-                      testValue += 0.1;
-
-                      progressBarController.height = 40;
-                    });
-                  },
-              )
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(15, 37, 15, 0),
-            child: LinearProgressIndicator(
-              value: testValue,
-              semanticsLabel: 'Linear progress indicator',
-            ),
-          )
-
-        ],
-      )
-  )
-),
- */

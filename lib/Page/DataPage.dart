@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../routes/detailDataRoute.dart';
-import 'package:flutter_line_message_converter/dataManager.dart';
+import '../Route/DetailData.dart';
+import '../Library/DataManager.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({Key? key}) : super(key: key);
