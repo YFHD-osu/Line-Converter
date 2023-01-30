@@ -29,15 +29,20 @@ class _CarTextBoxState extends State<CarTextBox> {
 
   @override
   Widget build(BuildContext context,) {
+    double defaultHeight = (MediaQuery.of(context).size.height
+      - MediaQueryData.fromWindow(ui.window).padding.bottom
+      - MediaQueryData.fromWindow(ui.window).padding.top
+      - 256
+    )/2;
     return Stack(
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
+          height: carTextExitVisibile ? carTextBoxHeight : defaultHeight,
           curve: Curves.fastOutSlowIn,
           child: SizedBox(
-            height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
+            height: carTextExitVisibile ? carTextBoxHeight : defaultHeight,
             child: TextField(
               key: carTextKey,
               enableSuggestions: false,
@@ -102,7 +107,7 @@ class _CarTextBoxState extends State<CarTextBox> {
             milliseconds: 300,
           ),
           alignment: Alignment.bottomRight,
-          height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
+          height: carTextExitVisibile ? carTextBoxHeight : defaultHeight,
           margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -170,15 +175,20 @@ class PersonTextBox extends StatefulWidget {
 class _PersonTextBoxState extends State<PersonTextBox> {
   @override
   Widget build(BuildContext context) {
+    double defaultHeight = (MediaQuery.of(context).size.height
+      - MediaQueryData.fromWindow(ui.window).padding.bottom
+      - MediaQueryData.fromWindow(ui.window).padding.top
+      - 256
+    )/2;
     return Stack(
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
+          height: personTextExitVisibile ? personTextBoxHeight : defaultHeight,
           curve: Curves.fastOutSlowIn,
           child: SizedBox(
-            height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
+            height: personTextExitVisibile ? personTextBoxHeight : defaultHeight,
             child: TextField(
               enableSuggestions: false,
               controller: personTextBoxController,
@@ -240,64 +250,64 @@ class _PersonTextBoxState extends State<PersonTextBox> {
           )
         ),
         AnimatedContainer(
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(milliseconds: 300),
-            alignment: Alignment.bottomRight,
-            height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
-            margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IgnorePointer(
-                  ignoring: !personTextExitVisibile,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 300),
-                    opacity: personTextExitVisibile ? 1.0 : 0.0,
-                    curve: Curves.linear,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 20),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.green[500],
-                      ),
-                      onPressed: () { //Disfocus keyboard
-                        FocusScope.of(context).unfocus();
-                        personTextExitVisibile = false;
-                        personTextBoxHeight = MediaQuery.of(context).size.height/2-170;
-                        print(MediaQueryData.fromWindow(ui.window).padding);
-                        setState(() {});
-                      },
-                      child: const Icon(Icons.transit_enterexit_rounded)
-                    )
-                  ),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green[500],
-                  ),
-                  onPressed: () { //Get clipboard data
-                    Clipboard.getData(Clipboard.kTextPlain).then((value){
-                      personTextBoxController.text = value!.text ?? '';
-                    }
-                    );
-                  },
-                  child: const Icon(Icons.paste_outlined)
-                ),
-                const SizedBox(width: 10),
-                TextButton(
+          curve: Curves.fastOutSlowIn,
+          duration: const Duration(milliseconds: 300),
+          alignment: Alignment.bottomRight,
+          height: personTextExitVisibile ? personTextBoxHeight : defaultHeight,
+          margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IgnorePointer(
+                ignoring: !personTextExitVisibile,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: personTextExitVisibile ? 1.0 : 0.0,
+                  curve: Curves.linear,
+                  child: TextButton(
                     style: TextButton.styleFrom(
                       textStyle: const TextStyle(fontSize: 20),
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.red[500],
+                      backgroundColor: Colors.green[500],
                     ),
-                    onPressed: () { //Get clipboard data
-                      personTextBoxController.text = '';
+                    onPressed: () { //Disfocus keyboard
+                      FocusScope.of(context).unfocus();
+                      personTextExitVisibile = false;
+                      personTextBoxHeight = MediaQuery.of(context).size.height/2-170;
+                      print(MediaQueryData.fromWindow(ui.window).padding);
+                      setState(() {});
                     },
-                    child: const Icon(Icons.delete_sweep_sharp, size: 24)
+                    child: const Icon(Icons.transit_enterexit_rounded)
+                  )
                 ),
+              ),
+              const SizedBox(width: 10),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green[500],
+                ),
+                onPressed: () { //Get clipboard data
+                  Clipboard.getData(Clipboard.kTextPlain).then((value){
+                    personTextBoxController.text = value!.text ?? '';
+                  }
+                  );
+                },
+                child: const Icon(Icons.paste_outlined)
+              ),
+              const SizedBox(width: 10),
+              TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 20),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red[500],
+                  ),
+                  onPressed: () { //Get clipboard data
+                    personTextBoxController.text = '';
+                  },
+                  child: const Icon(Icons.delete_sweep_sharp, size: 24)
+              ),
             ]
           )
         )
@@ -429,9 +439,9 @@ class _JoinPageState extends State<JoinPage> with WidgetsBindingObserver{
                 margin: EdgeInsets.fromLTRB(20, 5, 20, personTextExitVisibile ? personTextBoxHeight : 0),
                 child: TextButton(
                   style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.green[500],
-                      minimumSize: const Size(700, 50)
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green[500],
+                    minimumSize: const Size(700, 50)
                   ),
                   onPressed: () async {
                     late var result;
@@ -460,11 +470,11 @@ class _JoinPageState extends State<JoinPage> with WidgetsBindingObserver{
                       var endCode = await showDataObject.showData();
 
                       /* Code Lore:
-                  0 = 啥都不做
-                  1 = 上傳船單
-                  2 = 儲存到本機
-                  3 = 樣樣都來
-                */
+                        0 = 啥都不做
+                        1 = 上傳船單
+                        2 = 儲存到本機
+                        3 = 樣樣都來
+                      */
                       if (endCode == 0 || endCode == null) {return;}
 
                       var processDataObject = processDialogClass(context, endCode, result);
@@ -473,14 +483,14 @@ class _JoinPageState extends State<JoinPage> with WidgetsBindingObserver{
                     }
                   },
                   child: const Text('開始轉換',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      )
-                    ),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    )
                   ),
                 ),
-              ]
+              ),
+            ]
           )
         ),
       )

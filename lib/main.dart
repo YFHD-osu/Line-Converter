@@ -86,62 +86,65 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(elevation: 0, toolbarHeight: 0),
-        body: Center(child: widgetOptions.elementAt(_selectedIndex)),
-        bottomNavigationBar: SizedBox(
-          height: 60,
-          child: BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: const SizedBox(child: Icon(Icons.add)),
-                label: '加入',
-                activeIcon: Container(
-                  width: 50,
-                  height: 26,
-                  decoration: activeDecoration,
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.black,
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(elevation: 0, toolbarHeight: 0),
+          body: Center(child: widgetOptions.elementAt(_selectedIndex)),
+          bottomNavigationBar: SizedBox(
+            height: 60,
+            child: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: const SizedBox(child: Icon(Icons.add)),
+                  label: '加入',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.checklist_outlined),
-                label: '顯示',
-                activeIcon: Container(
-                  width: 50,
-                  height: 26,
-                  decoration: activeDecoration,
-                  child: const Icon(
-                    Icons.checklist_outlined,
-                    color: Colors.black,
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.checklist_outlined),
+                  label: '顯示',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.checklist_outlined,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.settings),
-                label: '設定',
-                activeIcon: Container(
-                  width: 50,
-                  height: 26,
-                  decoration: activeDecoration,
-                  child: const Icon(
-                    Icons.settings,
-                    color: Colors.black,
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.settings),
+                  label: '設定',
+                  activeIcon: Container(
+                    width: 50,
+                    height: 26,
+                    decoration: activeDecoration,
+                    child: const Icon(
+                      Icons.settings,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.green[800],
-            unselectedItemColor: Colors.grey,
-            onTap: _onItemTapped,
-          ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.green[800],
+              unselectedItemColor: Colors.grey,
+              onTap: _onItemTapped,
+            ),
+          )
         )
       )
     );
