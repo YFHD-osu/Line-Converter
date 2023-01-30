@@ -87,6 +87,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       bottom: true,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
