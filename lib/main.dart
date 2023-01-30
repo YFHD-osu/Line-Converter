@@ -98,6 +98,7 @@ class _AppState extends State<App> {
           bottomNavigationBar: SizedBox(
             height: 60,
             child: BottomNavigationBar(
+              elevation: 0.0,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: const SizedBox(child: Icon(Icons.add)),
