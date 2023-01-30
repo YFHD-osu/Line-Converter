@@ -87,7 +87,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: Theme.of(context).backgroundColor,
       child: SafeArea(
         top: false,
         bottom: true,
@@ -96,8 +96,9 @@ class _AppState extends State<App> {
           appBar: AppBar(elevation: 0, toolbarHeight: 0),
           body: Center(child: widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: SizedBox(
-            height: 60,
+            height: 62,
             child: BottomNavigationBar(
+              backgroundColor: Theme.of(context).backgroundColor,
               elevation: 0.0,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -105,7 +106,8 @@ class _AppState extends State<App> {
                   label: '加入',
                   activeIcon: Container(
                     width: 50,
-                    height: 26,
+                    height: 25,
+                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
                     decoration: activeDecoration,
                     child: const Icon(
                       Icons.add,
@@ -118,8 +120,9 @@ class _AppState extends State<App> {
                   label: '顯示',
                   activeIcon: Container(
                     width: 50,
-                    height: 26,
+                    height: 25,
                     decoration: activeDecoration,
+                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
                     child: const Icon(
                       Icons.checklist_outlined,
                       color: Colors.black,
@@ -131,8 +134,9 @@ class _AppState extends State<App> {
                   label: '設定',
                   activeIcon: Container(
                     width: 50,
-                    height: 26,
+                    height: 25,
                     decoration: activeDecoration,
+                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
                     child: const Icon(
                       Icons.settings,
                       color: Colors.black,
