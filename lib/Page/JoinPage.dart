@@ -34,10 +34,10 @@ class _CarTextBoxState extends State<CarTextBox> {
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: carTextExitVisibile ? carTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+          height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
           curve: Curves.fastOutSlowIn,
           child: SizedBox(
-            height: carTextExitVisibile ? carTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+            height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
             child: TextField(
               key: carTextKey,
               enableSuggestions: false,
@@ -102,7 +102,7 @@ class _CarTextBoxState extends State<CarTextBox> {
             milliseconds: 300,
           ),
           alignment: Alignment.bottomRight,
-          height: carTextExitVisibile ? carTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+          height: carTextExitVisibile ? carTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
           margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -175,10 +175,10 @@ class _PersonTextBoxState extends State<PersonTextBox> {
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          height: personTextExitVisibile ? personTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+          height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
           curve: Curves.fastOutSlowIn,
           child: SizedBox(
-            height: personTextExitVisibile ? personTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+            height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
             child: TextField(
               enableSuggestions: false,
               controller: personTextBoxController,
@@ -201,13 +201,14 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
+                  double topHeight = (MediaQuery.of(context).size.height-280)/2 + 83;
                   while(true) {
                     await Future.delayed(const Duration(milliseconds: 50));
                     if (lastHeight == 0.0 && !(isFirstStart)) {
                       carTextExitVisibile = false;
                       personTextExitVisibile = false;
                       FocusScope.of(context).unfocus();
-                      setState(() {});
+                      childScrollController.animateTo(0, duration: const Duration(milliseconds: 100), curve: Curves.ease);
                       return;
                     }
                     lastHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -219,18 +220,16 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                           - MediaQueryData.fromWindow(ui.window).padding.bottom
                           - MediaQueryData.fromWindow(ui.window).padding.top
                           - 14;
-                        Future.delayed(const Duration(milliseconds: 100)).then((
-                            value) =>
-                            childScrollController.animateTo(400,
-                                duration: const Duration(milliseconds: 100),
-                                curve: Curves.ease));
+                        Future.delayed(const Duration(milliseconds: 100)).then((value) =>
+                          childScrollController.animateTo(topHeight, duration: const Duration(milliseconds: 100), curve: Curves.ease));
                       });
                     } else {
                       return;
                     }
                   }
                 }
-                changeHeight();
+                changeHeight().then((value) => setState(() => {
+                Future.delayed(const Duration(milliseconds: 50)).then((value) => childScrollController.animateTo(0, duration: const Duration(milliseconds: 100), curve: Curves.ease))}));
 
               },
               onEditingComplete: () {
@@ -244,7 +243,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
             curve: Curves.fastOutSlowIn,
             duration: const Duration(milliseconds: 300),
             alignment: Alignment.bottomRight,
-            height: personTextExitVisibile ? personTextBoxHeight : MediaQuery.of(context).size.height/2-170,
+            height: personTextExitVisibile ? personTextBoxHeight : (MediaQuery.of(context).size.height-280)/2,
             margin: const EdgeInsets.fromLTRB(0, 0, 20, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -265,6 +264,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                         FocusScope.of(context).unfocus();
                         personTextExitVisibile = false;
                         personTextBoxHeight = MediaQuery.of(context).size.height/2-170;
+                        print(MediaQueryData.fromWindow(ui.window).padding);
                         setState(() {});
                       },
                       child: const Icon(Icons.transit_enterexit_rounded)
@@ -273,18 +273,18 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                 ),
                 const SizedBox(width: 10),
                 TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 20),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.green[500],
-                    ),
-                    onPressed: () { //Get clipboard data
-                      Clipboard.getData(Clipboard.kTextPlain).then((value){
-                        personTextBoxController.text = value!.text ?? '';
-                      }
-                      );
-                    },
-                    child: const Icon(Icons.paste_outlined)
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 20),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green[500],
+                  ),
+                  onPressed: () { //Get clipboard data
+                    Clipboard.getData(Clipboard.kTextPlain).then((value){
+                      personTextBoxController.text = value!.text ?? '';
+                    }
+                    );
+                  },
+                  child: const Icon(Icons.paste_outlined)
                 ),
                 const SizedBox(width: 10),
                 TextButton(
