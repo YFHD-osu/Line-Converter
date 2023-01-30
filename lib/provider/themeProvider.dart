@@ -35,6 +35,8 @@ class ThemeProvider extends ChangeNotifier {
 
 class ThemeDatas {
   static final darkTheme = ThemeData(
+    backgroundColor: Colors.grey[800],
+    scaffoldBackgroundColor: Colors.grey[1000],
     brightness: Brightness.dark,
     primaryColor: Colors.white,
     textTheme: const TextTheme(
@@ -59,6 +61,7 @@ class ThemeDatas {
   );
 
   static final lightTheme = ThemeData(
+    backgroundColor: Colors.grey[50],
     scaffoldBackgroundColor: Colors.grey[200],
     brightness: Brightness.light,
     primaryColor: Colors.black,

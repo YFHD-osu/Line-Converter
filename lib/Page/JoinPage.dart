@@ -209,7 +209,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
-                  double topHeight = (MediaQuery.of(context).size.height-280)/2 + safeAreaHeight + 60;
+                  double topHeight = (MediaQuery.of(context).size.height - MediaQueryData.fromWindow(ui.window).padding.top - 256)/2 + 84;
                   while(true) {
                     await Future.delayed(const Duration(milliseconds: 50));
                     if (lastHeight == 0.0 && !(isFirstStart)) {
