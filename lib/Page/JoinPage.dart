@@ -82,7 +82,8 @@ class _CarTextBoxState extends State<CarTextBox> {
                       setState(() {
                         carTextBoxHeight =MediaQuery.of(context).size.height
                           - MediaQuery.of(context).viewInsets.bottom
-                          - safeAreaHeight
+                          - MediaQueryData.fromWindow(ui.window).padding.bottom
+                          - MediaQueryData.fromWindow(ui.window).padding.top
                           - 14;
                         //Scrollable.ensureVisible(carTextKey.currentContext!, duration: const Duration(milliseconds: 80), curve: Curves.easeInOut);
                         Future.delayed(const Duration(milliseconds: 50)).then((value) => childScrollController.animateTo(73, duration: const Duration(milliseconds: 100), curve: Curves.ease));
@@ -223,9 +224,11 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                     isFirstStart = (lastHeight > 5.0) ? false : isFirstStart;
                     if (personTextExitVisibile) {
                       setState(() {
-                        personTextBoxHeight = MediaQuery.of(context).size.height
+                        personTextBoxHeight =
+                          MediaQuery.of(context).size.height
                           - MediaQuery.of(context).viewInsets.bottom
-                          - safeAreaHeight - 14;
+                          - MediaQueryData.fromWindow(ui.window).padding.bottom
+                          - MediaQueryData.fromWindow(ui.window).padding.top - 14;
                         Future.delayed(const Duration(milliseconds: 100)).then((value) =>
                           childScrollController.animateTo(topHeight, duration: const Duration(milliseconds: 100), curve: Curves.ease));
                       });
@@ -404,9 +407,9 @@ class _JoinPageState extends State<JoinPage> with WidgetsBindingObserver{
                           Center(
                             child: Text(widget.errorBoxController.errorLore ,
                               style: TextStyle(
-                                  color: Colors.red[500],
-                                  fontSize: 21,
-                                  backgroundColor: Colors.red[50]
+                                color: Colors.red[500],
+                                fontSize: 21,
+                                backgroundColor: Colors.red[50]
                               ),
                             ),
                           ),
