@@ -14,6 +14,7 @@ double personTextBoxHeight = 0.0;
 bool carTextExitVisibile = false;
 bool personTextExitVisibile = false;
 bool isMorningMode = true;
+double safeAreaHeight = MediaQueryData.fromWindow(ui.window).padding.bottom + MediaQueryData.fromWindow(ui.window).padding.top;
 
 class CarTextBox extends StatefulWidget {
   const CarTextBox({Key? key}) : super(key: key,);
@@ -30,8 +31,7 @@ class _CarTextBoxState extends State<CarTextBox> {
   @override
   Widget build(BuildContext context,) {
     double defaultHeight = (MediaQuery.of(context).size.height
-      - MediaQueryData.fromWindow(ui.window).padding.bottom
-      - MediaQueryData.fromWindow(ui.window).padding.top
+      - safeAreaHeight
       - 256
     )/2;
     return Stack(
@@ -82,8 +82,7 @@ class _CarTextBoxState extends State<CarTextBox> {
                       setState(() {
                         carTextBoxHeight =MediaQuery.of(context).size.height
                           - MediaQuery.of(context).viewInsets.bottom
-                          - MediaQueryData.fromWindow(ui.window).padding.bottom
-                          - MediaQueryData.fromWindow(ui.window).padding.top
+                          - safeAreaHeight
                           - 14;
                         //Scrollable.ensureVisible(carTextKey.currentContext!, duration: const Duration(milliseconds: 80), curve: Curves.easeInOut);
                         Future.delayed(const Duration(milliseconds: 50)).then((value) => childScrollController.animateTo(73, duration: const Duration(milliseconds: 100), curve: Curves.ease));
@@ -176,8 +175,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
   @override
   Widget build(BuildContext context) {
     double defaultHeight = (MediaQuery.of(context).size.height
-      - MediaQueryData.fromWindow(ui.window).padding.bottom
-      - MediaQueryData.fromWindow(ui.window).padding.top
+      - safeAreaHeight
       - 256
     )/2;
     return Stack(
@@ -211,7 +209,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
-                  double topHeight = (MediaQuery.of(context).size.height-280)/2 + 83;
+                  double topHeight = (MediaQuery.of(context).size.height-280)/2 + safeAreaHeight + 60;
                   while(true) {
                     await Future.delayed(const Duration(milliseconds: 50));
                     if (lastHeight == 0.0 && !(isFirstStart)) {
@@ -227,9 +225,7 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                       setState(() {
                         personTextBoxHeight = MediaQuery.of(context).size.height
                           - MediaQuery.of(context).viewInsets.bottom
-                          - MediaQueryData.fromWindow(ui.window).padding.bottom
-                          - MediaQueryData.fromWindow(ui.window).padding.top
-                          - 14;
+                          - safeAreaHeight - 14;
                         Future.delayed(const Duration(milliseconds: 100)).then((value) =>
                           childScrollController.animateTo(topHeight, duration: const Duration(milliseconds: 100), curve: Curves.ease));
                       });
@@ -274,7 +270,6 @@ class _PersonTextBoxState extends State<PersonTextBox> {
                       FocusScope.of(context).unfocus();
                       personTextExitVisibile = false;
                       personTextBoxHeight = MediaQuery.of(context).size.height/2-170;
-                      print(MediaQueryData.fromWindow(ui.window).padding);
                       setState(() {});
                     },
                     child: const Icon(Icons.transit_enterexit_rounded)
@@ -419,8 +414,8 @@ class _JoinPageState extends State<JoinPage> with WidgetsBindingObserver{
                               width: 50,
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                    foregroundColor: Colors.red[500],
-                                    fixedSize: const Size.fromWidth(30)
+                                  foregroundColor: Colors.red[500],
+                                  fixedSize: const Size.fromWidth(30)
                                 ),
                                 child: const Text('\u{274C}',
                                   textAlign: TextAlign.center,
