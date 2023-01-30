@@ -3,7 +3,6 @@ import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
 import 'dart:convert';
-import 'pages/processDialog.dart';
 
 void saveCredentials (String _credentials) {
   EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();

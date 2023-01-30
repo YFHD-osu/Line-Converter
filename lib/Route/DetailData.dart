@@ -1,7 +1,8 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:flutter_line_message_converter/dataManager.dart';
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import '../Library/DataManager.dart';
+
 import 'dart:ui';
 
 Future<String> GetHighlightName () async {

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 //copy by https://stackoverflow.com/questions/57131978/how-to-animate-alert-dialog-position-in-flutter buttonControlClass {
 
-class buttonControlClass{
-  var _decorationShape;
-  var _status;
+class ButtonControlClass{
+  late BorderSide _decorationShape;
+  late bool _status;
 
-  buttonControlClass(var context) {
+  ButtonControlClass(var context) {
     _decorationShape = BorderSide(width: 0, style: BorderStyle.solid, color: Theme.of(context).scaffoldBackgroundColor);
     _status = false;
   }
@@ -25,7 +25,7 @@ class buttonControlClass{
   }
 }
 
-List<Widget> GetWidgetList (Map dataBase, var context) {
+List<Widget> getWidgetList (Map dataBase, var context) {
   List<Widget> previewData = [];
   List<dynamic> carOrder = [];
 
@@ -37,9 +37,15 @@ List<Widget> GetWidgetList (Map dataBase, var context) {
 
   for(int i=0; i<carOrder.length; i++){
     String key = carOrder[i].toString();
+    String passengers = "";
+    for (int p=0; p<dataBase[key]['person'].length; p++){
+      if (dataBase[key]['person'][p] != "---") {
+        passengers += "${dataBase[key]['person'][p]}、";
+      }
+    }
     previewData.add(
       Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
         width: MediaQuery.of(context).size.width - 20,
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -48,14 +54,14 @@ List<Widget> GetWidgetList (Map dataBase, var context) {
         child: Column(
           children: [
             Container(
-              child: Text('|$key車| ${dataBase[key]['carID']} ', style: Theme.of(context).textTheme.labelLarge),
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.fromLTRB(15, 10, 5, 0),
+              margin: const EdgeInsets.fromLTRB(15, 10, 5, 0),
+              child: Text('第$key車 (編號:${dataBase[key]['carID']}) ', style: Theme.of(context).textTheme.labelLarge)
             ),
             Container(
-              child: Text('|乘客| ${dataBase[key]['person']}', style: Theme.of(context).textTheme.labelMedium),
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.fromLTRB(15, 0, 5, 10),
+              margin: const EdgeInsets.fromLTRB(15, 0, 5, 10),
+              child: Text('乘客: $passengers', style: Theme.of(context).textTheme.labelMedium)
             ),
           ],
         ),
@@ -65,27 +71,25 @@ List<Widget> GetWidgetList (Map dataBase, var context) {
   return previewData;
 }
 
-class showDataClass {
+class ShowDataClass {
   Map dataBase;
-  var context;
+  late var context;
 
-  showDataClass(this.dataBase, this.context) {
-    this.dataBase = dataBase;
-    this.context = context;
-    var previewData = GetWidgetList(dataBase, context);
+  ShowDataClass(this.dataBase, this.context) {
+    dataBase = dataBase;
+    context = context;
+    var previewData = getWidgetList(dataBase, context);
 
-    var saveLocal = buttonControlClass(context);
-    var uploadGoogle = buttonControlClass(context);
+    var saveLocal = ButtonControlClass(context);
+    var uploadGoogle = ButtonControlClass(context);
   }
 
 
   showData() async {
-    var endCode;
-
-    var previewData = GetWidgetList(dataBase, context);
-
-    var saveLocal = buttonControlClass(context);
-    var uploadGoogle = buttonControlClass(context);
+    late int? endCode;
+    var previewData = getWidgetList(dataBase, context);
+    var saveLocal = ButtonControlClass(context);
+    var uploadGoogle = ButtonControlClass(context);
 
     await showGeneralDialog(
       context: context,
@@ -93,14 +97,16 @@ class showDataClass {
       barrierLabel: '',
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
-          position: Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim1),
+          position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(anim1),
           child: child,
         );
       },
       pageBuilder: (context, anim1, anim2) {
         return StatefulBuilder(
-            builder: (context, setState){
-              return Align(
+          builder: (context, setState){
+            return SafeArea(
+              bottom: true,
+              child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                     height: MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.top - 50,
@@ -108,7 +114,7 @@ class showDataClass {
                     margin: const  EdgeInsets.only(bottom: 0, left: 0, right: 0, top: 0),
                     decoration: BoxDecoration(
                       color: Theme.of(context).inputDecorationTheme.fillColor,
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15)),
+                      borderRadius: const BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15))
                     ),
                     child: Column(
                       children: [
@@ -116,12 +122,12 @@ class showDataClass {
                           children: [
                             Container(
                               alignment: Alignment.center,
-                              margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: Text('轉換成功', style: Theme.of(context).textTheme.bodyMedium),
                             ),
                             Container( //關閉按鈕
                               alignment: Alignment.topLeft,
-                              margin: EdgeInsets.fromLTRB(5, 5, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(5, 5, 0, 0),
                               child: TextButton(
                                   onPressed: () {
                                     Navigator.pop(context, 0);
@@ -131,7 +137,7 @@ class showDataClass {
                             ),
                             Container( //執行按鈕
                               alignment: Alignment.topRight,
-                              margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 5, 5, 0),
                               child: TextButton(
                                   onPressed: !(saveLocal._status || uploadGoogle._status) ? null : (){
                                     if(uploadGoogle._status == true && saveLocal._status == false) {Navigator.pop(context, 1);}
@@ -149,20 +155,20 @@ class showDataClass {
                             Row(
                               children: [
                                 AnimatedContainer( // 儲存至本機開關
-                                    duration: Duration(milliseconds: 200),
-                                    width: MediaQuery.of(context).size.width/2 - 15,
-                                    height: MediaQuery.of(context).size.width/2 -15,
-                                    margin: EdgeInsets.fromLTRB(10, 5, 5, 10),
-                                    decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: saveLocal._decorationShape,
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                        )
-                                    ),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(13),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      child: InkWell(
+                                  duration: const Duration(milliseconds: 200),
+                                  width: MediaQuery.of(context).size.width/2 - 15,
+                                  height: MediaQuery.of(context).size.width/2 -15,
+                                  margin: const EdgeInsets.fromLTRB(10, 5, 5, 10),
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: saveLocal._decorationShape,
+                                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                                    )
+                                  ),
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(13),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: InkWell(
                                         onTap: () {
                                           setState(() {
                                             saveLocal.toggle(context);
@@ -182,47 +188,45 @@ class showDataClass {
                                             )
                                           ],
                                         )
-                                      ),
-                                    )
-                                ),
-                                AnimatedContainer( // 上傳至表單開關
-                                    duration: Duration(milliseconds: 200),
-                                    width: MediaQuery.of(context).size.width/2 - 15,
-                                    height: MediaQuery.of(context).size.width/2 -15,
-                                    margin: EdgeInsets.fromLTRB(5, 5, 10, 10),
-                                    decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: uploadGoogle._decorationShape,
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                        )
                                     ),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(13),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              uploadGoogle.toggle(context);
-                                            });
-                                          },
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.topCenter,
-                                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 30),
-                                                width: (MediaQuery.of(context).size.width - 15) / 2,
-                                                height: (MediaQuery.of(context).size.width - 15) / 2,
-                                                child: Center(child: Icon(Icons.cloud_upload, size: 60 * MediaQuery.of(context).devicePixelRatio)),
-                                              ),
-                                              Container(
-                                                alignment: Alignment.bottomCenter,
-                                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                                child: Text(/**/ '雲端上傳', style: Theme.of(context).textTheme.titleMedium),
-                                              )
-                                            ],
+                                  )
+                              ),
+                              AnimatedContainer( // 上傳至表單開關
+                                  duration: Duration(milliseconds: 200),
+                                  width: MediaQuery.of(context).size.width/2 - 15,
+                                  height: MediaQuery.of(context).size.width/2 -15,
+                                  margin: EdgeInsets.fromLTRB(5, 5, 10, 10),
+                                  decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: uploadGoogle._decorationShape,
+                                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                      )
+                                  ),
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(13),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() => uploadGoogle.toggle(context));
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.topCenter,
+                                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                                            width: (MediaQuery.of(context).size.width - 15) / 2,
+                                            height: (MediaQuery.of(context).size.width - 15) / 2,
+                                            child: Center(child: Icon(Icons.cloud_upload, size: 60 * MediaQuery.of(context).devicePixelRatio)),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                            child: Text(/**/ '雲端上傳', style: Theme.of(context).textTheme.titleMedium),
                                           )
-                                      ),
-                                    )
+                                        ],
+                                      )
+                                    ),
+                                  )
                                 ),
                               ],
                             )
@@ -231,12 +235,10 @@ class showDataClass {
                         Container(
                           margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Theme.of(context).scaffoldBackgroundColor
+                            borderRadius: BorderRadius.circular(15),
+                            color: Theme.of(context).scaffoldBackgroundColor
                           ),
-                          child: Center(
-                            child: Text('資料預覽',style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-                          ),
+                          child: Center(child: Text('資料預覽',style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center)),
                         ),
                         Expanded(
                           child: Material(
@@ -247,18 +249,18 @@ class showDataClass {
                               child: Column(children: previewData),
                             ),
                           )
-
                         ),
                         const SizedBox(height: 10)
                       ],
-                    )
+                  )
                 ),
-              );
-            }
+              )
+            );
+          }
         );
       },
     ).then((value) {
-        endCode = value;
+        endCode = value as int?;
        }
     );
     return endCode;

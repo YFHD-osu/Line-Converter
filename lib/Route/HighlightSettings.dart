@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_line_message_converter/routes/certificateSettingsRoute.dart';
-import '../dataManager.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-
-
 
 class MasterTextEditingControllerClass {
   var NameHighlighted;
