@@ -299,7 +299,7 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                                             backgroundColor: MaterialStateProperty.resolveWith((states) {return Colors.red[500];})
                                         ),
                                         onPressed: () {},
-                                        onLongPress: () { DeleteFloder('carDatas'); },
+                                        onLongPress: () { deleteFloder('carDatas'); },
                                         child: const Text('長按刪除', style: TextStyle(color: Colors.white, fontSize: 20)),
                                       ),
                                     ),
