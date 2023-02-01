@@ -74,7 +74,7 @@ Map<String, int> dirStatSync(String dirPath) {
   return {'fileNum': fileNum, 'size': totalSize};
 }
 
-void DeleteFloder (String folder) async {
+void deleteFloder (String folder) async {
   final dir = Directory('${await _localPath}/$folder');
   dir.deleteSync(recursive: true);
 }

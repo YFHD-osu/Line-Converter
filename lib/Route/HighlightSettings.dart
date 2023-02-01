@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
 class MasterTextEditingControllerClass {
-  var NameHighlighted;
+  late TextEditingController nameHighlighted;
 
   MasterTextEditingControllerClass(){
-    NameHighlighted = TextEditingController();
+    nameHighlighted = TextEditingController();
   }
 
   void init () async {
     EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-    NameHighlighted.text = await encryptedSharedPreferences.getString('highlightName');
+    nameHighlighted.text = await encryptedSharedPreferences.getString('highlightName');
   }
 }
 
@@ -22,7 +22,7 @@ class HighlightSettingsRoute extends StatefulWidget {
 }
 
 class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
-  var MasterTextEditingController = MasterTextEditingControllerClass();
+  var masterTextEditingController = MasterTextEditingControllerClass();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
   }
   void _loadTextBox () {
     EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-    MasterTextEditingController.init();
+    masterTextEditingController.init();
     encryptedSharedPreferences.reload();
   }
 
@@ -46,7 +46,7 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
               Stack(
                 children: [
                   Container(
-                      margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
+                      margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                       height: 60,
                       decoration: BoxDecoration(
                           color: Theme.of(context).inputDecorationTheme.fillColor,
@@ -54,19 +54,19 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
+                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 3),
                           child: Center(child: Text('醒目標示', style: Theme.of(context).textTheme.titleLarge))
                       )
                   ),
                   Container(
-                      margin: EdgeInsets.fromLTRB(15, 16, 0, 10),
+                      margin: const EdgeInsets.fromLTRB(15, 16, 0, 10),
                       child: Material(
                         clipBehavior: Clip.hardEdge,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                         color: Theme.of(context).inputDecorationTheme.fillColor,
                         child: IconButton(
                             onPressed: () { Navigator.pop(context); },
-                            icon: Icon(Icons.arrow_back_ios_rounded)
+                            icon: const Icon(Icons.arrow_back_ios_rounded)
                         ),
                       )
                   )
@@ -76,10 +76,10 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
                 child: SingleChildScrollView(
                     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     child: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
                       child: TextField(
-                        controller: MasterTextEditingController.NameHighlighted,
-                        style: TextStyle(
+                        controller: masterTextEditingController.nameHighlighted,
+                        style: const TextStyle(
                           fontSize: 18,
                         ),
                         maxLines: 10,
@@ -107,12 +107,12 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
         alignment: Alignment.center,
         height: 60,
         child: Container(
-          margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
+          margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 10, 10),
+                margin: const EdgeInsets.fromLTRB(0, 0, 10, 10),
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.delete),
                   style: ElevatedButton.styleFrom(
@@ -120,7 +120,7 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
                       foregroundColor: Colors.white
                   ),
                   onPressed: () async {
-                    MasterTextEditingController.NameHighlighted.text = '';
+                    masterTextEditingController.nameHighlighted.text = '';
                   },
                   label: const Text('清除全部', style: TextStyle(color: Colors.white, fontSize: 15)),
                 ),
@@ -131,12 +131,12 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.save),
                     style: ElevatedButton.styleFrom(
-                        primary: Colors.green[600],
-                        onPrimary: Colors.white
+                      backgroundColor: Colors.green[600],
+                      foregroundColor: Colors.white
                     ),
                     onPressed: () {
                       EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-                      (MasterTextEditingController.NameHighlighted.text == '') ? encryptedSharedPreferences.remove('highlightName') : encryptedSharedPreferences.setString('highlightName', MasterTextEditingController.NameHighlighted.text);
+                      (masterTextEditingController.nameHighlighted.text == '') ? encryptedSharedPreferences.remove('highlightName') : encryptedSharedPreferences.setString('highlightName', masterTextEditingController.nameHighlighted.text);
                       Navigator.pop(context);
                     },
                     label: const Text('儲存離開', style: TextStyle(color: Colors.white, fontSize: 15)),
@@ -147,7 +147,5 @@ class _HighlightSettingsRoute extends State<HighlightSettingsRoute> {
           )
         ),
       );
-
-
   }
 }

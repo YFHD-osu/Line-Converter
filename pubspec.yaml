@@ -37,6 +37,8 @@ dependencies:
   shared_preferences: ^2.0.15
   flutter_launcher_icons: ^0.10.0
   encrypted_shared_preferences: ^3.0.1
+  widgets_to_image: ^0.0.2
+  share_plus: ^6.3.0
 
 dev_dependencies:
   flutter_test:
