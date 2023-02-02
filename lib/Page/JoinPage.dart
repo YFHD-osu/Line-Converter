@@ -64,7 +64,7 @@ class _CarTextBoxState extends State<CarTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
-                  double topHeight = defaultHeight + MediaQueryData.fromWindow(ui.window).padding.top + 60;
+                  double topHeight = (MediaQuery.of(context).size.height - safeAreaHeight - 256)/2 + 84;
                   while(true){
                     await Future.delayed(const Duration(milliseconds: 50));
                     // print("$lastHeight -> ${MediaQuery.of(context).viewInsets.bottom}");
@@ -118,17 +118,17 @@ class _CarTextBoxState extends State<CarTextBox> {
                   opacity: carTextExitVisibile ? 1.0 : 0.0,
                   curve: Curves.linear,
                   child: TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 20),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.green[500],
-                      ),
-                      onPressed: () { //Disfocus keyboard
-                        FocusScope.of(context).unfocus();
-                        carTextExitVisibile = false;
-                        setState(() {});
-                      },
-                      child: const Icon(Icons.transit_enterexit_rounded)
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 20),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.green[500],
+                    ),
+                    onPressed: () { //Disfocus keyboard
+                      FocusScope.of(context).unfocus();
+                      carTextExitVisibile = false;
+                      setState(() {});
+                    },
+                    child: const Icon(Icons.transit_enterexit_rounded)
                   )
                 ),
               ),
