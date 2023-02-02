@@ -64,7 +64,7 @@ class _CarTextBoxState extends State<CarTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
-                  double topHeight = defaultHeight + safeAreaHeight + 60;
+                  double topHeight = defaultHeight + MediaQueryData.fromWindow(ui.window).padding.top + 60;
                   while(true){
                     await Future.delayed(const Duration(milliseconds: 50));
                     // print("$lastHeight -> ${MediaQuery.of(context).viewInsets.bottom}");
@@ -192,13 +192,13 @@ class _PersonTextBoxState extends State<PersonTextBox> {
               ),
               maxLines: 999,
               decoration: InputDecoration(
-                  hintText: "輸入人名訊息串",
-                  fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.green, width: 2),
-                  )
+                hintText: "輸入人名訊息串",
+                fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.green, width: 2),
+                )
               ),
               onTap: () async {
                 personTextExitVisibile = true;
