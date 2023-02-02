@@ -64,7 +64,7 @@ class _CarTextBoxState extends State<CarTextBox> {
                 Future<void> changeHeight () async {
                   double lastHeight = 1.0;
                   bool isFirstStart = true;
-                  double topHeight = MediaQuery.of(context).size.height - defaultHeight - 196;
+                  double topHeight = defaultHeight + safeAreaHeight + 60;
                   while(true){
                     await Future.delayed(const Duration(milliseconds: 50));
                     // print("$lastHeight -> ${MediaQuery.of(context).viewInsets.bottom}");
