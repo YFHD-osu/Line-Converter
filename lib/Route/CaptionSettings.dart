@@ -1,6 +1,6 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/material.dart';
-import '../Library/DataManager.dart';
+import 'package:line_converter/Library/data_manager.dart';
 
 const String cerificate = r'''{
 "type": "service_account",
@@ -231,10 +231,10 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                                           ),
                                           onPressed: () {},
                                           onLongPress: () {
-                                            EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-                                            encryptedSharedPreferences.setString('morningWorkspaceTitle','接車表');
-                                            encryptedSharedPreferences.setString('sheetID','1-9WyEnfRInGMPOXAocCVmYt90ittVKIxIWEhQvQ0Z30');
-                                            encryptedSharedPreferences.setString('certificate', cerificate);
+                                            final perfs = EncryptedSharedPreferences();
+                                            perfs.setString('morningWorkspaceTitle','接車表');
+                                            perfs.setString('sheetID','1-9WyEnfRInGMPOXAocCVmYt90ittVKIxIWEhQvQ0Z30');
+                                            perfs.setString('certificate', cerificate);
                                           },
                                           child: const Text('長按回復', style: TextStyle(color: Colors.white, fontSize: 20)),
                                         ),
@@ -267,8 +267,8 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                                         ),
                                         onPressed: () {},
                                         onLongPress: () async {
-                                          EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-                                          encryptedSharedPreferences.setString('highlightName', highlightName);
+                                          final prefs = EncryptedSharedPreferences();
+                                          prefs.setString('highlightName', highlightName);
                                         },
                                         child: const Text('長按回復', style: TextStyle(color: Colors.white, fontSize: 20)),
                                       ),
@@ -299,7 +299,7 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                                             backgroundColor: MaterialStateProperty.resolveWith((states) {return Colors.red[500];})
                                         ),
                                         onPressed: () {},
-                                        onLongPress: () { deleteFloder('carDatas'); },
+                                        onLongPress: () { dbManager.deleteAllMorning(); },
                                         child: const Text('長按刪除', style: TextStyle(color: Colors.white, fontSize: 20)),
                                       ),
                                     ),

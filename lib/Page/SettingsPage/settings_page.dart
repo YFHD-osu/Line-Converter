@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../Route/ThemeSettings.dart';
-import '../Route/CertificateSettings.dart';
-import '../Route/CaptionSettings.dart';
-import '../Route/HighlightSettings.dart';
+import '../../Route/ThemeSettings.dart';
+import '../../Route/CertificateSettings/certificate_settings.dart';
+import '../../Route/CaptionSettings.dart';
+import '../../Route/HighlightSettings.dart';
 
 
 class SettingPage extends StatefulWidget {
