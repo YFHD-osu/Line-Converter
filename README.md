@@ -61,3 +61,7 @@ Auto Message Converter (AMC) on Flutter
        下午24090
 9車下午25441
 ```
+
+# 待做請求
+- 江味 (只能在1,2,3車)
+- 秀鑾 (只能在4車以後)

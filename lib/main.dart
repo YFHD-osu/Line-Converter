@@ -1,157 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'provider/ThemeProvider.dart';
-import 'Page/SettingsPage.dart';
-import 'Page/JoinPage.dart';
-import 'Page/DataPage.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-class ErrorBoxControllerObject {
-  double height ;
-  String errorLore;
-  Color color;
-  ErrorBoxControllerObject (this.height, this.errorLore, this.color);
-}
+import 'package:line_converter/Provider/theme.dart';
+import 'package:line_converter/Page/HomePage/home_page.dart';
+import 'package:line_converter/Library/data_manager.dart';
 
-PageController pageController = PageController(initialPage: 0,);
-ErrorBoxControllerObject errorBoxController = ErrorBoxControllerObject(0, "", Colors.red.shade50);
+ThemeProvider themeProvider = ThemeProvider();
 
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  runApp(MyApp(prefs.getInt('themeMode') ?? 0, ));
+  await themeProvider.fetch(); // Initialize theme mode from shared_preference
+  await dbManager.initialize(); // Initialize sqlite database
+  
+  runApp(const MyApp());
+
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  /*SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);*/
 }
 
 class MyApp extends StatelessWidget {
-  int themeCode;
-  MyApp(this.themeCode, {Key? key}) : super(key: key){
-    themeCode = themeCode;
-  }
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (context) => ThemeProvider(themeCode),
+    create: (context) => themeProvider,
     builder: (context, _) {
       final themeProvider = Provider.of<ThemeProvider>(context);
-
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-
+      
       return MaterialApp(
+        home: const HomePage(),
+        theme: ThemePack.light,
+        darkTheme: ThemePack.dark,
+        themeMode: themeProvider.theme,
+        debugShowCheckedModeBanner: false,
         builder: (context, child) {
           final mediaQueryData = MediaQuery.of(context);
           return MediaQuery(
             data: mediaQueryData.copyWith(textScaleFactor: 1),
             child: child!,
           );
-        },
-        debugShowCheckedModeBanner: false,
-        themeMode: themeProvider.themeMode,
-        theme: ThemeDatas.lightTheme,
-        darkTheme: ThemeDatas.darkTheme,
-        home: const App(),
+        }
       );
-    },
+    }
   );
-}
-
-class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  int _selectedIndex = 0; //Set initially page to 0
-
-  BoxDecoration activeDecoration = BoxDecoration(
-    color: Colors.green[200],
-    shape: BoxShape.rectangle,
-    borderRadius: const BorderRadius.all(Radius.circular(15))
-  ); //Active BottomNavigationBarItem style
-
-  List<Widget> widgetOptions = <Widget>[
-    JoinPage(errorBoxController: errorBoxController),
-    const DataPage(),
-    const SettingPage(),
-  ]; //All page in NavigationBar
-
-  void _onItemTapped(int index) {
-    setState(() => _selectedIndex = index);
-  } //Handle tap item event
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      child: SafeArea(
-        top: false,
-        bottom: true,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(elevation: 0, toolbarHeight: 0),
-          body: Center(child: widgetOptions.elementAt(_selectedIndex)),
-          bottomNavigationBar: SizedBox(
-            height: 62,
-            child: BottomNavigationBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              elevation: 0.0,
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: const SizedBox(child: Icon(Icons.add)),
-                  label: '加入',
-                  activeIcon: Container(
-                    width: 50,
-                    height: 25,
-                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                    decoration: activeDecoration,
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.checklist_outlined),
-                  label: '顯示',
-                  activeIcon: Container(
-                    width: 50,
-                    height: 25,
-                    decoration: activeDecoration,
-                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                    child: const Icon(
-                      Icons.checklist_outlined,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.settings),
-                  label: '設定',
-                  activeIcon: Container(
-                    width: 50,
-                    height: 25,
-                    decoration: activeDecoration,
-                    margin: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                    child: const Icon(
-                      Icons.settings,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.green[800],
-              unselectedItemColor: Colors.grey,
-              onTap: _onItemTapped,
-            ),
-          )
-        )
-      )
-    );
-  }
 }
