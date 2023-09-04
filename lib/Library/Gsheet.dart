@@ -1,171 +1,240 @@
-import 'dart:async';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'package:flutter/material.dart';
-import 'package:gsheets/gsheets.dart';
-import 'dart:convert';
 
-void saveCredentials (String _credentials) {
-  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-  encryptedSharedPreferences.setString('credentials', _credentials).then((bool success) {
-    if (success) {print('success');}
-    else {print('fail');}
-  });
+import 'package:googleapis/drive/v3.dart';
+import 'package:googleapis/sheets/v4.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:line_converter/Library/typing.dart';
+
+const List weekString = ['', '一', '二', '三', '四', '五', '六', '日'];
+
+class GSheetExpection{
+  String message;
+  GSheetExpection({required this.message});
 }
 
-Future<String> readDatas (String key) async {
-  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
-  String returnValue = await encryptedSharedPreferences.getString(key);
-  return returnValue;
-}
+class GSheet {
+  late final SheetsApi api;
+  late final String credential;
+  late final List<String> verifySheetTitle;
+  late final AutoRefreshingAuthClient client;
 
-Future<int> uploadMorningData(GlobalKey _dialogKey, var status, Map dataBase) async {
-
-  final List weekString = ['', '一', '二', '三', '四', '五', '六', '日', '一'];
-  DateTime now = DateTime.now();
-  now = now.add(const Duration(days: 1));
-  String dateTime = "${now.year}年${now.month}月${now.day}日 (${weekString[now.weekday]})";
-
-  try{
-    List<List<dynamic>> uploadList = (dataBase['carOrder'] == null) ? await uploadListMorning(dataBase, 1 ,dateTime) : await uploadListMorning(dataBase, 1 ,dateTime);
-    if (status.isStop) {return -1;}
-
-    if (_dialogKey.currentState != null && _dialogKey.currentState!.mounted) {_dialogKey.currentState!.setState(() { status.value = 0.25; status.lore = "完成: 25%"; } );}
-    final gSheets = GSheets(json.decode(await readDatas('certificate')));
-    if (status.isStop) {return -1;}
-
-    if (_dialogKey.currentState != null && _dialogKey.currentState!.mounted) {_dialogKey.currentState!.setState(() { status.value = 0.50; status.lore = "完成: 50%";} );}
-    final spreadSheet = await gSheets.spreadsheet(await readDatas('sheetID'));
-    if (status.isStop) {return -1;}
-
-    if (_dialogKey.currentState != null && _dialogKey.currentState!.mounted) {_dialogKey.currentState!.setState(() { status.value = 0.75; status.lore = "完成: 75%";} );}
-    var sheet = spreadSheet.worksheetByTitle(await readDatas('morningWorkspaceTitle'));
-
-    if (status.isStop) {return -1;}
-    if (_dialogKey.currentState != null && _dialogKey.currentState!.mounted) {_dialogKey.currentState!.setState(() { status.value = 1.0; status.lore = "完成: 100%";} );
+  Future<void> initialize({String? credential}) async {
+    if (credential == null) {
+      final perfs = EncryptedSharedPreferences();
+      credential = await perfs.getString('certificate');
     }
-    await sheet!.values.insertColumns(1, uploadList, fromRow: 1);
+
+    client = await clientViaServiceAccount(
+      ServiceAccountCredentials.fromJson(credential),
+      ['https://www.googleapis.com/auth/spreadsheets',
+      'https://www.googleapis.com/auth/drive.readonly',
+      'https://www.googleapis.com/auth/spreadsheets.readonly'] 
+    );
+    api = SheetsApi(client);
+    this.credential = credential;
+
+    return;
   }
 
-  on FormatException catch (e) {return 1;} //'憑證不完整'
-  on GSheetsException catch (e) {
-    if (e.toString().indexOf('The caller does not have permission') > 0){return 2;} //'表單權限不足'
-    else if (e.toString().indexOf('Requested entity was not found') > 0){return 3;} //'找不到表單'
-    else if (e.toString().indexOf('Range') > 0){return 4;}                          //'找人囉(E-Parse)'
-    else {return 5;}  //'找人囉(E-Unknow)'
+  Future<Sheet?> sheetByName({String? title}) async {
+    if (title == null) {
+      final perfs = EncryptedSharedPreferences();
+      title = await perfs.getString('spreadsheetTitle');
+    }
+    final sheetsRes = api.spreadsheets;
+    final sheetID = await EncryptedSharedPreferences().getString('sheetID');
+    // print(sheetID);
+    final spreadSheet = await sheetsRes.get(sheetID, includeGridData: true);
+    final sheets = spreadSheet.sheets?.where((Sheet sheet) => sheet.properties?.title == title).toList();
+
+    if (sheets == null) throw GSheetExpection(message: 'Sheet named $title not found');
+    if (sheets.isEmpty) throw GSheetExpection(message: 'Sheet named $title not found');
+    
+    return sheets.first;
   }
 
-  return 0;
-}
+  List<Request> unMergeReq(Sheet sheet, GridRange range) { 
+    final merges = sheet.merges;
+    if (merges == null) return [];
 
-/*
-Future<String?> _myFuture() async {
-  await Future.delayed(const Duration(seconds: 5));
-  return 'Future completed';
-}
+    final involved = merges.where((GridRange element) =>
+      (element.startColumnIndex! < range.endColumnIndex! && 
+       element.startRowIndex! < range.endRowIndex!)).toList();
+    if (involved.isEmpty) return [];
 
-// keep a reference to CancelableOperation
-CancelableOperation? _myCancelableFuture;
-
-// This is the result returned by the future
-String? _text;
-
-// Help you know whether the app is "loading" or not
-bool _isLoading = false;
-
-// This function is called when the "start" button is pressed
-void _getData() async {
-  _isLoading = true;
-  _myCancelableFuture = CancelableOperation.fromFuture(_myFuture(), onCancel: () => 'Future has been canceld',
-  );
-
-  final value = await _myCancelableFuture?.value;
-  // update the UI
-  _text = value;
-  _isLoading = false;
-}
-
-// this function is called when the "cancel" button is tapped
-void _cancelFuture() async {
-  final result = await _myCancelableFuture?.cancel();
-  _text = result;
-  _isLoading = false;
-}
-
- */
-
-
-Future<List<List<dynamic>>> uploadListMorning (Map dataBase, int spaceCount, String dateTime) async {
-  /*
-  spaceCount = 表單之間隔多遠
-  dateTime   = 今日日期字串
-  */
-
-  List<List<dynamic>> uploadList = [];
-
-  for(int i=1; i<=3 ; i++){
-    List tmpList0 = [];
-    List tmpList1 = [];
-
-    tmpList0.add(dateTime);
-    for (int k=i; k<=i+6 ; k+=3){
-      String key = (k).toString();
-
-      if (dataBase[key] == null) {
-        for(int repeat=0 ; repeat<=3 ; repeat++){tmpList0.add('');} //找不到這班車? 沒事填個空
-      }
-      else{
-        for(int repeat=0 ; repeat<=3 ; repeat++) {tmpList0.add('$key車\n${dataBase[key]["carID"]}');} //4格高的車號和ID
-      }
-    }
-    uploadList.add(tmpList0);
-
-    tmpList1.add(dateTime);
-    for (int j=i; j<=i+6 ; j+=3){
-      String key = (j).toString();
-      if(dataBase[key] == null) {
-        for(int index=0 ; index<4 ; index++){tmpList1.add('');}
-      }
-      else{
-        for(int index=0 ; index<=3 ; index++){tmpList1.add(dataBase[key]['person'][index]);}
-      }
-    }
-    uploadList.add(tmpList1);
-
+    return involved.map((GridRange range) =>
+      Request(
+        unmergeCells: UnmergeCellsRequest(range: range)
+      )).toList();
   }
 
-  for(int i=1 ; i<=spaceCount ; i++) {uploadList.add(['','','']);}
-
-  for(int i=10; i<=12 ; i++){
-    List tmpList0 = [];
-    List tmpList1 = [];
-
-    tmpList0.add(dateTime);
-    for (int k=i; k<=i+2 ; k+=3){
-      String key = (k).toString();
-
-      if (dataBase[key] == null) {
-        for(int repeat=0 ; repeat<=3 ; repeat++){tmpList0.add('');} //找不到這班車? 沒事填個空
-      }
-      else{
-        for(int repeat=0 ; repeat<=3 ; repeat++) {tmpList0.add('$key車\n${dataBase[key]["carID"]}');} //4格高的車號和ID
-      }
-    }
-    uploadList.add(tmpList0);
-
-    tmpList1.add(dateTime);
-    for (int j=i; j<=i+2 ; j+=3){
-      String key = (j).toString();
-      if(dataBase[key] == null) {
-        for(int index=0 ; index<4 ; index++){tmpList1.add('');}
-      }
-      else{
-        for(int index=0 ; index<4 ; index++){tmpList1.add(dataBase[key]['person'][index]);}
-      }
-    }
-    uploadList.add(tmpList1);
-
+  List<Request> clearAllData(Sheet sheet, GridRange range) {
+    return  [ Request( // Clear cell value
+      updateCells: UpdateCellsRequest(
+        fields: '*',
+        range: range,
+        rows: [RowData(values: [
+          CellData(
+            formattedValue: '',
+            userEnteredFormat: CellFormat(
+              borders: Borders(
+                bottom: Border(width: 0, style: 'NONE'),
+                left: Border(width: 0, style: 'NONE'),
+                top: Border(width: 0, style: 'NONE'),
+                right: Border(width: 0, style: 'NONE')
+              )
+            )
+          )
+        ])]
+      )
+    )];
   }
 
-  return uploadList;
-}
+  List<Request> sizeReq(GridRange range) {
+    final sheetID = range.sheetId;
+    final values = [('ROWS', 1, range.endRowIndex, 41), ('ROWS', 0, 1, 38), ('COLUMNS', 1, 6, 100)];
 
+    return values.map((value) => Request(
+      updateDimensionProperties: UpdateDimensionPropertiesRequest(
+        fields: '*',
+        range: DimensionRange(
+          sheetId: sheetID,
+          dimension: value.$1,
+          startIndex: value.$2,
+          endIndex: value.$3
+        ),
+        properties: DimensionProperties(
+          pixelSize: value.$4
+        )
+      )
+    )).toList();
+  }
+
+  List<Request> mergeReq(List<GridRange> ranges) {
+    return ranges.map((value) =>
+      Request(
+        mergeCells: MergeCellsRequest(
+          mergeType: 'MERGE_ALL',
+          range: value
+        )
+      )
+    ).toList();
+  }
+
+  List<Request> textStyleReq(GridRange range) {
+    return [ Request(
+      repeatCell: RepeatCellRequest(
+        fields: '*',
+        range: range,
+        cell: CellData(
+          userEnteredFormat: CellFormat(
+            verticalAlignment: 'MIDDLE',
+            horizontalAlignment: 'CENTER',
+            textFormat: TextFormat(fontSize: 24),
+            borders: Borders(
+              top: Border(width: 1, style: 'SOLID'),
+              left: Border(width: 1, style: 'SOLID'),
+              right: Border(width: 1, style: 'SOLID'),
+              bottom: Border(width: 1, style: 'SOLID')
+            )
+          )
+        )
+      )
+    )];
+  }
+
+  Future<BatchUpdateValuesResponse> uploadSheet(Sheet sheet, List<CarData> result) async {
+    List<List<String?>> column=[[null], [null], [null], [null], [null], [null] ];
+    final Map<int, (int, int)> columnMap = {
+      1: (0,1), 2: (2,3), 0:(4,5)
+    };
+
+    for (CarData data in result) {
+      final index = columnMap[data.order%3];
+      final passengers = data.passenger.morning;
+      if (index == null) continue;
+      if (passengers == null) continue;
+      column[index.$1] += ['第${data.order}車\n${data.serial.morning}', null, null, null];
+      column[index.$2] += (passengers.length < 4) ? passengers+[''*(4-passengers.length)] : passengers;
+    }
+    // print(result.length);
+    final dt = result.first.addTime.add(const Duration(days: 1));
+    final sheetTitle = sheet.properties!.title!;
+    final req = BatchUpdateValuesRequest(
+      valueInputOption: 'USER_ENTERED',
+      data: [
+        ValueRange(
+          majorDimension: 'ROWS',
+          range: '$sheetTitle!A1:F1',
+          values: [['${dt.year}年${dt.month}月${dt.day}日 (${weekString[dt.weekday]})']]
+        ),
+        ValueRange(
+          majorDimension: 'COLUMNS',
+          range: '$sheetTitle!A1:F${(result.length/3).ceil()*4+1}',
+          values: column
+        )
+      ]
+    );
+    final encryptedSharedPreferences = EncryptedSharedPreferences();
+    final sheetID = await encryptedSharedPreferences.getString('sheetID');
+    return await api.spreadsheets.values.batchUpdate(req, sheetID); 
+  }
+
+  Future<BatchUpdateSpreadsheetResponse> resetSheet(Sheet sheet, GridRange clearRange) async {
+    final rowCount = ((clearRange.endRowIndex!-1)/4).ceil();
+    final colCount = ((clearRange.endColumnIndex!-1)/2).ceil();
+    final mergeList = [(0,0,colCount*2,1)];
+    for(int x=0; x<colCount; x++) {
+      for(int y=1; y<rowCount*4; y+=4) {
+        mergeList.add((x*2, y, x*2+1, y+4));
+      }
+    }
+
+    final mergeRange = mergeList.map((value) =>
+      GridRange(
+        endRowIndex: value.$4,
+        startRowIndex: value.$2,
+        endColumnIndex: value.$3,
+        startColumnIndex: value.$1,
+        sheetId: sheet.properties!.sheetId!
+      )).toList();
+
+    final req = BatchUpdateSpreadsheetRequest(
+      requests: 
+        clearAllData(sheet, clearRange) +
+        unMergeReq(sheet, clearRange) +
+        textStyleReq(clearRange)+
+        mergeReq(mergeRange) + 
+        sizeReq(clearRange)
+    );
+    final encryptedSharedPreferences = EncryptedSharedPreferences();
+    final sheetID = await encryptedSharedPreferences.getString('sheetID');
+    return await api.spreadsheets.batchUpdate(req, sheetID); 
+  }
+
+  // If there are no error, null will return
+  Future<String?> verifySheetAccess({
+    required String sheetId
+  }) async { 
+
+    /* Check whether the file is a sheet */
+    late final Spreadsheet response;
+    try{
+      response = await api.spreadsheets.get(sheetId);
+    } on DetailedApiRequestError catch(e) {
+      return '無法找到該表單(${e.status})';
+    }
+
+    /* Check access to the file */
+    try{
+      final driveAPI = DriveApi(client);
+      await driveAPI.permissions.list(sheetId);
+    } on DetailedApiRequestError catch (_) {
+      return '請授予服務帳號編輯表單的權限';
+    }
+    
+    verifySheetTitle = response.sheets!.map((e) => e.properties?.title??'').toList();
+    return null;
+  }
+
+}

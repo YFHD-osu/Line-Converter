@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_line_message_converter/provider/ThemeProvider.dart';
+import 'package:line_converter/Provider/theme.dart';
 
 bool _darkModeCheckBox = false;
 bool _lightModeCheckBox = false;
@@ -16,7 +16,6 @@ class ThemeSettingsRoute extends StatefulWidget {
 
 class _ThemeSettingsRouteState extends State<ThemeSettingsRoute> {
 
-  @override
   void setCheckBox(int themeCode){
     setState(() {
       switch(themeCode){
@@ -53,27 +52,23 @@ class _ThemeSettingsRouteState extends State<ThemeSettingsRoute> {
   _loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      print(prefs.getInt('themeMode'));
+      // print(prefs.getInt('themeMode'));
       if (prefs.getInt('themeMode') == null){setCheckBox(0);}
       else{setCheckBox(prefs.getInt('themeMode')!);}
     });
   }
 
-  @override
-  void setTheme(int themeCode){
+  void setTheme(int index){
     final provider = Provider.of<ThemeProvider>(context, listen: false);
-    provider.toggleTheme(themeCode);
+    provider.toggle(ThemeMode.values[index]);
   }
-
+  
   @override
   Widget build(BuildContext context) {
     precacheImage(const AssetImage("assets/darkThemeSample.png"), context);
     precacheImage(const AssetImage('assets/lightThemeSample.png'), context);
     return Scaffold(
-      appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 0
-      ),
+      appBar: AppBar(elevation: 0, toolbarHeight: 0),
       body: Center(
         child: Column(
           children: [
@@ -130,8 +125,8 @@ class _ThemeSettingsRouteState extends State<ThemeSettingsRoute> {
                             label: Text(' 跟隨系統的主題', style: Theme.of(context).textTheme.labelMedium),
                             style: ElevatedButton.styleFrom(
                               surfaceTintColor: Theme.of(context).inputDecorationTheme.fillColor,
-                              primary: Theme.of(context).inputDecorationTheme.fillColor,
-                              onPrimary : Theme.of(context).primaryColor,
+                              backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
+                              foregroundColor : Theme.of(context).primaryColor,
                               alignment: Alignment.centerLeft,
                               shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(15)
                               ),
