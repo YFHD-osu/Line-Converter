@@ -34,7 +34,7 @@ class _DataPageState extends State<DataPage> {
     setState(() => listIsReady = false);
 
     morningItems = (await dbManager.fetchMorning()).reversed.toList();
-    eveningItems = (await dbManager.fetchEvening()).toList(); //
+    eveningItems = (await dbManager.fetchEvening()).reversed.toList(); //
 
     setState(() => listIsReady = true);
     return;
