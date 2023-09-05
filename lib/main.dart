@@ -9,8 +9,6 @@ import 'package:line_converter/Library/data_manager.dart';
 ThemeProvider themeProvider = ThemeProvider();
 
 void main() async{
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await themeProvider.fetch(); // Initialize theme mode from shared_preference
   await dbManager.initialize(); // Initialize sqlite database
   runApp(const MyApp());
@@ -26,9 +24,8 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
-    return ChangeNotifierProvider(
+  Widget build(BuildContext context) => 
+    ChangeNotifierProvider(
       create: (context) => themeProvider,
       builder: (context, _) {
         final themeProvider = Provider.of<ThemeProvider>(context);
@@ -50,4 +47,3 @@ class MyApp extends StatelessWidget {
       }
     );
   }
-}
