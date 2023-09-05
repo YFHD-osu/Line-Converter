@@ -51,7 +51,9 @@ class EveningProc {
     );
 
     List<String> tmpPassenger = 
-      message.replaceAll(heading??'', '')
+      message
+      .replaceAll(" ", '')
+      .replaceAll(RegExp(r'\d+?車(來|回|)\d+'), '')
       .replaceAll(const Utf8Decoder().convert([13]), '')
       .split(RegExp(r'(，|。|、|,|\.)')); 
 
