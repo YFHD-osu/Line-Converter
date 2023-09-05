@@ -42,8 +42,6 @@ class _DataPageState extends State<DataPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context); 
-    
     return Column(
       children: [
         const TitleBar(title: '本機檔案'),
@@ -60,9 +58,7 @@ class _DataPageState extends State<DataPage> {
             );
           }
         ),
-        SizedBox(
-          width: double.infinity,
-          height: mediaQuery.size.height-193,
+        Expanded(
           child: PageView(
             controller: controller,
             physics: const NeverScrollableScrollPhysics(),
@@ -82,7 +78,7 @@ class _DataPageState extends State<DataPage> {
             ]
           )
         )
-      ],
+      ]
     );
   }
 }

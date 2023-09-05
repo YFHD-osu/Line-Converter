@@ -46,8 +46,8 @@ class EveningMainColumn extends StatelessWidget {
                 CarOrder(order: index.order),
                 const SizedBox(width: 5),
                 CarSerial(
-                  serial: index.serial.morning,
-                  icon: CupertinoIcons.sunrise
+                  serial: index.serial.evening,
+                  icon: CupertinoIcons.sunset
                 )]
               ),
               PassengerList(
