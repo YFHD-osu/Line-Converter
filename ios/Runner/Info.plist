@@ -48,7 +48,7 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>
-=======
+
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
@@ -98,5 +98,5 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
->>>>>>> Stashed changes
+
 </plist>
