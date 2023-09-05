@@ -9,10 +9,10 @@ import 'package:line_converter/Library/data_manager.dart';
 ThemeProvider themeProvider = ThemeProvider();
 
 void main() async{
-  await themeProvider.fetch(); // Initialize theme mode from shared_preference
-  await dbManager.initialize(); // Initialize sqlite database
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await themeProvider.fetch(); // Initialize theme mode from shared_preference
+  await dbManager.initialize(); // Initialize sqlite database
   runApp(const MyApp());
 
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
