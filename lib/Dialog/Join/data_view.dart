@@ -62,8 +62,7 @@ class _PersonViewState extends State<PersonView> {
         textBox(widget.title),
         const SizedBox(width: 5),
         SizedBox(
-          height: 40,
-          width: (width > 640) ? 465 : width - 175,
+          height: 40, width: width - 151,
           child: ListView.separated(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,

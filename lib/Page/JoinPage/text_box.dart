@@ -219,32 +219,29 @@ class _TextBoxState extends State<TextBox> {
     final double defaultHeight = (mediaQuery.size.height - safeAreaHeight - 300)/2;
 
     return Stack(
+      alignment: Alignment.bottomRight,
       children: [
         Hero(
           tag: widget.tag,
           child: Material(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-              height: defaultHeight,
-              child: TextField(
-                onTap: onTap,
-                maxLines: 999,
-                readOnly: true,
-                controller: widget.controller,
-                style: const TextStyle(fontSize: 18),
-                decoration: InputDecoration(
-                  filled: true,
-                  hintText: widget.hintText,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)
-                  )
+            child: TextField(
+              onTap: onTap,
+              maxLines: 999,
+              readOnly: true,
+              controller: widget.controller,
+              style: const TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                filled: true,
+                hintText: widget.hintText,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10)
                 )
               )
             )
           )
         ),
         Padding(
-          padding: EdgeInsets.only(top: defaultHeight - 50, right: 20),
+          padding: const EdgeInsets.only(right: 10, bottom: 5),
           child: ToolButtons(
             tag: '${widget.tag}-c',
             visibile: false,

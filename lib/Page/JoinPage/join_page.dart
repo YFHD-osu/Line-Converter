@@ -27,7 +27,7 @@ class _JoinPageState extends State<JoinPage> with TickerProviderStateMixin{
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+          margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           height: 60,
           width: MediaQuery.of(context).size.width - 20,
           decoration: BoxDecoration(
@@ -40,10 +40,20 @@ class _JoinPageState extends State<JoinPage> with TickerProviderStateMixin{
             child: Text('車表轉換', style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
           )
         ),
-        personTextBox,
-        carTextBox,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: personTextBox
+          )
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: carTextBox
+          )
+        ),
         Container(
-          margin: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: TextButton(
             style: TextButton.styleFrom(
               foregroundColor: Colors.white,
