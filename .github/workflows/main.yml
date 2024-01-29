@@ -24,7 +24,7 @@ jobs:
         run: flutter pub get
 
       - name: Build
-        run: flutter build web
+        run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
