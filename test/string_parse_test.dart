@@ -1,5 +1,5 @@
-import 'package:line_converter/Library/typing.dart';
-import 'package:line_converter/Library/morning_parse.dart';
+import 'package:line_converter/core/typing.dart';
+import 'package:line_converter/core/parser.dart';
 
 String message1 = '''
 車來7:35
@@ -66,8 +66,8 @@ void main() {
     print("車輛順序: ${element.order}");
     print("早車輛編號: ${element.serial.morning} 時間: ${element.time.morning}");
     print("晚車輛編號: ${element.serial.evening} 時間: ${element.time.evening}");
-    print("來乘客: ${element.passenger.morning}");
-    print("回乘客: ${element.passenger.evening}");
+    print("來乘客: ${element.passenger.come}");
+    print("回乘客: ${element.passenger.back}");
   });
   data.errors.forEach((element) {print("${element.description}: ${element.message}"); });
 }

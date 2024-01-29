@@ -1,6 +1,6 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:line_converter/Library/data_manager.dart';
+import 'package:line_converter/core/database.dart';
 
 const String cerificate = r'''{
 "type": "service_account",
@@ -299,7 +299,7 @@ class _CaptionSettingsRouteState extends State<CaptionSettingsRoute> {
                                             backgroundColor: MaterialStateProperty.resolveWith((states) {return Colors.red[500];})
                                         ),
                                         onPressed: () {},
-                                        onLongPress: () { dbManager.deleteAllMorning(); },
+                                        // onLongPress: () { dbManager.deleteAllMorning(); },
                                         child: const Text('長按刪除', style: TextStyle(color: Colors.white, fontSize: 20)),
                                       ),
                                     ),
