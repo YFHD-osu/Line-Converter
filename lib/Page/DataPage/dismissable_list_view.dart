@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:line_converter/Page/DataPage/title_tile.dart';
+import 'package:line_converter/page/DataPage/title_tile.dart';
+import 'package:line_converter/page/DataPage/mode_switch.dart';
 
-import 'package:line_converter/Page/DataPage/mode_switch.dart';
-
-// ignore: must_be_immutable
 class DismissableListView extends StatefulWidget {
   DismissableListView({super.key, 
     required this.items, 

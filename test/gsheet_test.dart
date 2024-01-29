@@ -1,4 +1,4 @@
-import 'package:line_converter/Library/typing.dart';
+import 'package:line_converter/core/typing.dart';
 import 'package:http/http.dart' as http;
 
 const List weekString = ['', '一', '二', '三', '四', '五', '六', '日', '一'];
