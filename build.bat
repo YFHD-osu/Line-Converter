@@ -1,0 +1,1 @@
+flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/master/" --web-renderer canvaskit

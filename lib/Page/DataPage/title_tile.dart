@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:line_converter/Library/data_manager.dart';
-import 'package:line_converter/Page/DataPage/index_tile.dart';
-import 'package:line_converter/Page/DataPage/mode_switch.dart';
+import 'package:line_converter/core/database.dart';
+import 'package:line_converter/page/DataPage/mode_switch.dart';
 
 class TitleTile extends StatefulWidget {
   const TitleTile({
@@ -40,9 +39,9 @@ class _TitleTileState extends State<TitleTile> {
             onDismissed: (direction) {
               widget.items.removeAt(widget.index);
               if (widget.showType == ShowType.morning) {
-                dbManager.deleteMorning(item['id']as int);
+                //TODO: dbManager.deleteMorning(item['id']as int);
               } else {
-                dbManager.deleteEvening(item['id']as int);
+                //TODO: dbManager.deleteEvening(item['id']as int);
               }
               widget.listKey.currentState!.removeItem(widget.index, (_, animation) => const SizedBox());
               widget.onDismissed?.call();
@@ -55,7 +54,7 @@ class _TitleTileState extends State<TitleTile> {
               child: const Text("刪除", style: TextStyle(fontSize: 24)),
             ),
             direction: DismissDirection.endToStart,
-            child: IndexTile(data: item, showType: widget.showType)
+            child: const SizedBox() // IndexTile(data: item, showType: widget.showType)
           )
         )
       )
