@@ -21,6 +21,7 @@ jobs:
 
       - name: Download Dependencies
         run: |
+          pwd
           flutter clean
           flutter pub get
 
