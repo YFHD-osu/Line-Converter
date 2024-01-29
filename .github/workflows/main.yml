@@ -21,7 +21,9 @@ jobs:
         run: flutter config --enable-web
 
       - name: Download Dependencies
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
