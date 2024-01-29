@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'package:line_converter/Provider/theme.dart';
+import 'package:line_converter/provider/theme.dart';
 
 bool _darkModeCheckBox = false;
 bool _lightModeCheckBox = false;
