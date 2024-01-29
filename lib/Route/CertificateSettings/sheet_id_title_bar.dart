@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
-import 'package:line_converter/Library/gsheet.dart';
+import 'package:line_converter/core/gsheet.dart';
 import 'package:line_converter/Route/CertificateSettings/sheet_id_bottom.dart';
 import 'package:line_converter/Route/CertificateSettings/sheet_id_section.dart';
 
