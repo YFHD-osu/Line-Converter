@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:line_converter/Library/data_manager.dart';
+import 'package:line_converter/core/database.dart';
 
-import 'package:line_converter/Page/DataPage/no_index.dart';
-import 'package:line_converter/Page/DataPage/title_bar.dart';
-import 'package:line_converter/Page/DataPage/mode_switch.dart';
-import 'package:line_converter/Page/DataPage/dismissable_list_view.dart';
+import 'package:line_converter/page/DataPage/mode_switch.dart';
+import 'package:line_converter/page/DataPage/dismissable_list_view.dart';
 
 ShowType tempVal = ShowType.morning;
 const List weekString = ['', '一', '二', '三', '四', '五', '六', '日'];
@@ -33,9 +31,11 @@ class _DataPageState extends State<DataPage> {
     morningItems.clear();
     setState(() => listIsReady = false);
 
+    /* TODO
     morningItems = (await dbManager.fetchMorning()).reversed.toList();
-    eveningItems = (await dbManager.fetchEvening()).reversed.toList(); //
-
+    eveningItems = (await dbManager.fetchEvening()).reversed.toList();
+    */
+    
     setState(() => listIsReady = true);
     return;
   }
@@ -44,32 +44,18 @@ class _DataPageState extends State<DataPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const TitleBar(title: '本機檔案'),
-        ModeSwitch(
-          key: switchKey,
-          initValue: tempVal,
-          onChange: () {
-            final selected = switchKey.currentState?.selected??ShowType.morning;
-            tempVal = selected;
-            controller.animateToPage(
-              (selected==ShowType.morning) ? 0 : 1,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn
-            );
-          }
-        ),
         Expanded(
           child: PageView(
             controller: controller,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              morningItems.isEmpty && listIsReady ? const NoIndex() :
+              //morningItems.isEmpty && listIsReady ? const NoIndex() :
               DismissableListView(
                 items: morningItems,
                 showType: ShowType.morning,
                 onDismissed: () => setState(() {})
               ),
-              eveningItems.isEmpty && listIsReady ? const NoIndex() :
+              //eveningItems.isEmpty && listIsReady ? const NoIndex() :
               DismissableListView(
                 items: eveningItems,
                 showType: ShowType.evening,
