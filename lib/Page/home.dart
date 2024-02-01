@@ -2,10 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_converter/core/database.dart';
 import 'package:line_converter/page/join.dart';
 import 'package:line_converter/page/data_view.dart';
 import 'package:line_converter/page/settings.dart';
 import 'package:line_converter/core/typing.dart';
+import 'package:line_converter/widgets.dart';
+
+final morningKey = GlobalKey();
+final eveningKey = GlobalKey();
 
 class NavigationItem extends BottomNavigationBarItem{
   static BoxDecoration activeDecoration = BoxDecoration(
@@ -34,6 +39,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _controller = PageController();
+
   Widget _appBar() {
     final theme = Theme.of(context);
     return AppBar(
@@ -56,17 +63,37 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Image.asset("assets/logo.png", fit: BoxFit.fitHeight)
           ),
-          Text("車表轉換", style: theme.textTheme.titleMedium),
+          const Text("車表轉換"),
         ]
       ),
       actions: [
+        FireStore.instance.loggedIn ? const SizedBox() : TextButton(
+          child: Text("登入", style: theme.textTheme.titleMedium),
+          onPressed: () async {
+            final update = await showDialog<bool?>(
+              context: context,
+              builder: (context) => const AccountDialog()
+            );
+            if (update??false) setState(() {});
+          }
+        ),
         IconButton(
           icon: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => JoinPage()))
+          onPressed: () async {
+            await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const JoinPage()));
+            morningKey.currentState?.setState(() {});
+            eveningKey.currentState?.setState(() {});
+            setState(() {});
+          }
         ),
         IconButton(
           icon: const Icon(Icons.settings),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingPage())),
+          onPressed: () async {
+            await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingPage()));
+            morningKey.currentState?.setState(() {});
+            eveningKey.currentState?.setState(() {});
+            setState(() {});
+          }
         )
       ],
       flexibleSpace: ClipRect(
@@ -89,18 +116,35 @@ class _HomePageState extends State<HomePage> {
           preferredSize: const Size.fromHeight(50),
           child: _appBar()
         ),
-        body: const SizedBox.expand(
+        body: SizedBox.expand(
           child: Column(
             children: [
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                 child: SizedBox(
                   width: double.infinity,
-                  child: ModeSwitch()
+                  child: ModeSwitch(
+                    onChange: (value) {
+                      _controller.animateToPage(
+                        value.index, 
+                        duration: const Duration(milliseconds: 350),
+                        curve: Curves.easeInOut
+                      );
+                    }
+                  )
                 )
               ),
-              Expanded(child: DataView())
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    DataView(key: morningKey, type: MessageType.morning),
+                    DataView(key: eveningKey, type: MessageType.evening),
+                  ]
+                ) 
+              )
             ]
           )
         )
@@ -109,15 +153,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-enum ShowType {morning, evening}
 
-const Map<ShowType, Color> skyColors = <ShowType, Color>{
-  ShowType.morning: Colors.green,
-  ShowType.evening: Colors.green
+const Map<MessageType, Color> skyColors = <MessageType, Color>{
+  MessageType.morning: Colors.green,
+  MessageType.evening: Colors.green
 };
 
 class ModeSwitch extends StatefulWidget {
-  final VoidCallback? onChange;
+  final Function(MessageType)? onChange;
 
   const ModeSwitch({super.key, this.onChange});
 
@@ -126,41 +169,40 @@ class ModeSwitch extends StatefulWidget {
 }
 
 class ModeSwitchState extends State<ModeSwitch> {
-  ShowType selected = ShowType.morning;
+  MessageType selected = MessageType.morning;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return CupertinoSlidingSegmentedControl<ShowType>(
-      groupValue: selected,
-      thumbColor: skyColors[selected]!,
-      backgroundColor: theme.inputDecorationTheme.fillColor!,
-      onValueChanged: (ShowType? value) {
-        if (value != null) {
-          setState(() {selected = value;});
-          widget.onChange?.call();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: CupertinoSlidingSegmentedControl<MessageType>(
+        groupValue: selected,
+        thumbColor: skyColors[selected]!,
+        backgroundColor: theme.inputDecorationTheme.fillColor!,
+        onValueChanged: (MessageType? value) {
+          if (value != null) {
+            setState(() {selected = value;});
+            widget.onChange?.call(value);
+          }
+        },
+        children: <MessageType, Widget>{
+          MessageType.morning: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text('早班車', style: theme.textTheme.labelLarge)
+          ),
+          MessageType.evening: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text('晚班車', style: theme.textTheme.labelLarge)
+          )
         }
-      },
-      children: const <ShowType, Widget>{
-        ShowType.morning: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            '早班車', style: TextStyle(color: Colors.white)
-          )
-        ),
-        ShowType.evening: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            '晚班車', style: TextStyle(color: Colors.white)
-          )
-        )
-      }
+      )
     );
   }
 }
 
 class IndexTile extends StatelessWidget {
-  final CarData data;
+  final DataDocs data;
   final List weekString = ['', '一', '二', '三', '四', '五', '六', '日'];
 
   IndexTile({super.key, required this.data});
@@ -168,7 +210,6 @@ class IndexTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
 
     return Material(
       clipBehavior: Clip.hardEdge,
@@ -193,36 +234,28 @@ class IndexTile extends StatelessWidget {
                 )
               ),
               child: Text(
-                '${data.addTime.year}年${data.addTime.month}月${data.addTime.day}日 (${weekString[data.addTime.weekday]})',
+                '${data.timestamps.year}年${data.timestamps.month}月${data.timestamps.day}日 (${weekString[data.timestamps.weekday]})',
                 style: Theme.of(context).textTheme.labelLarge),
             )
           ]
         ),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DataViewPage(data: [])))
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DataViewPage(data: data)))
       )
     );
   }
 }
 
 class DataView extends StatefulWidget {
-  const DataView({super.key});
+  final MessageType type;
+
+  const DataView({super.key, required this.type});
 
   @override
   State<DataView> createState() => _DataViewState();
 }
 
 class _DataViewState extends State<DataView> {
-  List<CarData> data = [
-    CarData(
-      type: MessageType.morning,
-      time: Time(),
-      order: 1,
-      serial: Serial(),
-      addTime: DateTime.now(),
-      passenger: Passenger(),
-      orderList: []
-    )
-  ];
+  List<DataDocs> data = [];
 
   Widget _empty() {
     final mediaQuery = MediaQuery.of(context);
@@ -239,18 +272,192 @@ class _DataViewState extends State<DataView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (data.isEmpty) return _empty();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: ListView.builder(
+  Widget _tiles() => Padding(
+    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+    child: ClipRRect(
+      clipBehavior: Clip.hardEdge,
+      borderRadius: BorderRadius.circular(15),
+      child: ListView.separated(
         padding: EdgeInsets.zero,
         itemCount: data.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           return IndexTile(data: data[index]);
         }
       )
+    )
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: FireStore.instance.getData(widget.type),
+      builder:(context, snapshot) {
+        data = snapshot.data??[];
+        if (data.isEmpty) return _empty();
+        return _tiles();
+      },
+    );
+  }
+}
+
+class AccountDialog extends StatefulWidget {
+  const AccountDialog({
+    super.key,
+    this.isLogin = true
+  });
+
+  final bool isLogin;
+
+  @override
+  State<AccountDialog> createState() => _AccountDialogState();
+}
+
+class _AccountDialogState extends State<AccountDialog> {
+  String? description;
+  late bool autoLogin = false, loginMode = widget.isLogin;
+  final email = TextEditingController();
+  final username = TextEditingController();
+  final password = TextEditingController();
+
+  Future _registerClick() async {
+    setState(() => description = null);
+    final response = await FireStore.instance.register(username.text ,email.text, password.text, null, autoLogin);
+    if (response.success) {_pop(true); return;}
+    setState(() => description = response.description);
+  }
+
+  Future _loginClick() async {
+    setState(() => description = null);
+    final response = await FireStore.instance.login(email.text, password.text, autoLogin);
+    if (response.success) {_pop(true); return;}
+    setState(() => description = response.description);
+  }
+
+  void _pop(value) => Navigator.of(context).pop(value);
+
+  Widget _loginDialog() {
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    
+    return AlertDialog(
+      key: const ValueKey<int>(0),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('登入'),
+          Text('註冊或登入帳號已享有免費的雲端儲存空間', 
+            style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey))
+        ]
+      ),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            SizedBox(
+              width: mediaQuery.size.width - 150,
+              child: CupertinoTextBox(
+                title: "帳號", controller: email,)
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: mediaQuery.size.width - 150,
+              child: CupertinoTextBox(
+                title: "密碼", controller: password, obscureText: true)
+            ),
+            const SizedBox(height: 5),
+            description==null ? const SizedBox() : Text("$description",
+              style: theme.textTheme.labelSmall?.copyWith(color: Colors.red)),
+            const SizedBox(height: 5),
+            FancySwitch(
+              isEnable: autoLogin,
+              title: "自動登入",
+              lore: "保存這次的登入資訊以利下次自動登入",
+              onChange: (value) => setState(() => autoLogin = value),
+            )            
+          ]
+        )
+      ),
+      actions: <Widget>[
+        CupertinoButton(
+          minSize: 0,
+          padding: EdgeInsets.zero,
+          onPressed: () => setState(() => loginMode = false),
+          child: const Text('註冊', style: TextStyle(color: Colors.green)),
+        ),
+        const SizedBox(width: 20),
+        CupertinoButton(
+          minSize: 0,
+          padding: EdgeInsets.zero,
+          onPressed: _loginClick,
+          child: const Text('登入', style: TextStyle(color: Colors.green)),
+        ),
+      ]
+    );
+  }
+
+  Widget _registerDialog() {
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    
+    return AlertDialog(
+      key: const ValueKey<int>(1),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('註冊'),
+          Text('註冊或登入帳號已享有免費的雲端儲存空間', 
+            style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey))
+        ]
+      ),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            SizedBox(
+              width: mediaQuery.size.width - 150,
+              child: CupertinoTextBox(
+                title: "名稱", controller: username)
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: mediaQuery.size.width - 150,
+              child: CupertinoTextBox(
+                title: "帳號", controller: email,)
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: mediaQuery.size.width - 150,
+              child: CupertinoTextBox(
+                title: "密碼", controller: password, obscureText: true)
+            ),
+            const SizedBox(height: 5),
+            description==null ? const SizedBox() : Text("$description",
+              style: theme.textTheme.labelSmall?.copyWith(color: Colors.red)),
+            const SizedBox(height: 5),
+            FancySwitch(
+              isEnable: autoLogin,
+              title: "自動登入",
+              lore: "保存這次的登入資訊以利下次自動登入",
+              onChange: (value) => setState(() => autoLogin = value),
+            )
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        CupertinoButton(
+          minSize: 0,
+          padding: EdgeInsets.zero,
+          onPressed: _registerClick,
+          child: const Text('註冊', style: TextStyle(color: Colors.green)),
+        )
+      ]
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 350),
+      child: loginMode ? _loginDialog() : _registerDialog()
     );
   }
 }
