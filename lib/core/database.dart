@@ -1,13 +1,78 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:encrypt/encrypt.dart';
-import 'package:path/path.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+
+import 'package:hive/hive.dart';
 import 'package:line_converter/core/typing.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:line_converter/core/extension.dart';
+
+class PrefsCache extends ChangeNotifier{
+  String sheetTitle, credential, sheetID, highlight;
+
+  String? get clientEmail => jsonDecode(credential)["client_email"] as String?;
+
+  PrefsCache({
+    required this.credential,
+    required this.sheetTitle,
+    required this.sheetID,
+    required this.highlight
+  });
+
+  factory PrefsCache.fromMap(Map res) {
+    return PrefsCache(
+      sheetTitle: res["sheet"]?["sheetTitle"]??"",
+      credential: res["sheet"]?["credential"]??"",
+      sheetID:  res["sheet"]?["sheetID"]??"",
+      highlight: res["sheet"]?["highlight"]??"",
+    );
+  }
+
+  PrefsCache setMap(Map res) {
+    sheetTitle= res["sheet"]?["sheetTitle"]??"";
+    credential= res["sheet"]?["credential"]??"";
+    sheetID= res["sheet"]?["sheetID"]??"";
+    highlight = res["sheet"]?["highlight"]??"";
+    notifyListeners();
+    return this;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "sheetTitle": sheetTitle,
+      "credential": credential,
+      "sheetID": sheetID,
+      "highlight": highlight
+    };
+  }
+}
+
+class AuthResponse {
+  final bool success;
+  final String? description;
+
+  AuthResponse({required this.success, this.description});
+}
+
+class DataDocs {
+  final int id;
+  final List<CarData> data;
+  final DateTime timestamps;
+
+  DataDocs({required this.id, required this.data, required this.timestamps});
+  
+  factory DataDocs.fromMap(Map res) {
+    final result = DataDocs(
+      id: res["id"],
+      data: (jsonDecode(res["data"]) as List).map((e) => CarData.fromMap(e)).toList(),
+      timestamps: DateTime.fromMillisecondsSinceEpoch(res["timestamp"])
+    );
+    return result;
+  }
+}
 
 class FireStore {
   FireStore._();
@@ -17,37 +82,133 @@ class FireStore {
     return _instance!;
   }
 
-  UserCredential? user;
+  PrefsCache prefs = PrefsCache.fromMap({});
+  CollectionReference? _ref;
+  UserCredential? _credential;
 
-  final iv = IV.fromUtf8("8PzGKSMLuqSm0MVb");
-  final key = Key.fromUtf8("xUhHPVSWs2nDjg2XY3XZ82DE75lbjNTG");
   final authApi = FirebaseAuth.instance;
+  final storage = const FlutterSecureStorage();
+  late final Box _box;
 
-  Future<bool> storeEmailPasswd(String email, String passwd) async {
-    final encrypter = Encrypter(AES(key));
-    final encrypted = encrypter.encrypt("$email::$passwd", iv: iv);
-    final prefs = await SharedPreferences.getInstance();
-    return await prefs.setString("login", encrypted.base64);
+  bool get loggedIn => !(_credential == null || _ref == null);
+  String? get username => _credential?.user?.displayName;
+  String? get email => _credential?.user?.email;
+  String get imageUrl => _credential?.user?.photoURL??"https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
+
+  Future<void> storeEmailPasswd(String email, String passwd) async {
+    await _box.put("secret", "$email::$passwd");
   }
 
-  Future<List<String>?> getEmailPasswd() async {
-    final encrypter = Encrypter(AES(key));
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString("login");
-    if (data == null) return null;
-    final decrypt = encrypter.decrypt(Encrypted.fromBase64(data), iv: iv);
-    return decrypt.split("::");
-  }
+  Future<List<String>?> getEmailPasswd() async =>
+    (await _box.get("secret") as String?)?.split("::");
 
   Future inititalze() async {
-    // print(await storeEmailPasswd("test@gmail.com", "123456"));
-    print(await getEmailPasswd());
+    final property = await DeviceInfoPlugin().getMap();
+    _box = await Hive.openBox('login', 
+      encryptionCipher: HiveAesCipher(property.values.join("%").codeUnits.sublist(1, 33)));
+    final lastStored = await getEmailPasswd();
+    if (lastStored?.isNotEmpty??false) {
+      await login(lastStored!.first, lastStored.last, false);
+    }
     return;
-    // user = await auth.signInWithEmailAndPassword(email: login!.first, password: login.last);
-    final token = await authApi.currentUser?.getIdToken();
-    print(user?.user?.uid);
   }
 
+  Future<AuthResponse> login(String email, String passwd, bool saveInfo) async {
+    final emailExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailExp.hasMatch(email)) return AuthResponse(success: false, description: "帳號為無效的電子郵件信箱");
+    if (passwd.length < 6 || passwd.isEmpty) return AuthResponse(success: false, description: "帳號或密碼有誤");
+    try {
+      _credential = await authApi.signInWithEmailAndPassword(email: email, password: passwd);
+    } on Exception catch (e) {
+      return AuthResponse(success: false, description: e.toString());
+    }
+    try {
+      final ref = FirebaseFirestore.instance.collection("userdata");
+      await ref.doc(_credential!.user!.uid).get();
+      if (saveInfo) storeEmailPasswd(email, passwd);
+      _ref = ref;
+    } catch (e) {
+      return AuthResponse(success: false, description: e.toString());
+    }
+    getPrefs();
+    // print(querySnapshot);
+    return AuthResponse(success: true);
+  }
+
+  Future<AuthResponse> register(
+    String username,
+    String email,
+    String passwd,
+    String? photoUrl,
+    bool? saveInfo
+  ) async {
+    final emailExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (username.isEmpty) return AuthResponse(success: false, description: "使用者名稱不可為空");
+    if (!emailExp.hasMatch(email)) return AuthResponse(success: false, description: "帳號為無效的電子郵件信箱");
+    if (passwd.length < 6) return AuthResponse(success: false, description: "密碼至少為6位元的字串");
+    try {
+      _credential = await authApi.createUserWithEmailAndPassword(email: email, password: passwd);
+      _credential!.user!.updateDisplayName(username);
+    } catch (e) {
+      final description = e.toString();
+      if (description.contains("email-already-in-use")) {
+        return AuthResponse(success: false, description: "電子郵件已經被註冊過了");
+      } else if (description.contains("missing-password")) {
+        return AuthResponse(success: false, description: "請提供密碼");
+      } else if (description.contains("weak-password")) {
+        return AuthResponse(success: false, description: "密碼至少包含六位元以上");
+      }
+      return AuthResponse(success: false, description: e.toString());
+    }
+
+    return login(email, passwd, saveInfo??false);    
+  }
+
+  Future addData(List<CarData> context) async {
+    if (!loggedIn) return;
+    final data = jsonEncode(context.map((e) => e.toMap()).toList());
+    final root = _ref!.doc(_credential!.user!.uid);
+
+    final type = context.first.type.name;
+    final loaded = await root.collection(type).get();
+    final lastId = loaded.docs.isEmpty ? 0 : loaded.docs.last.data()["id"]+1??0;
+    await root.collection(type).doc("$lastId").set({
+      "data": data,
+      "id": lastId,
+      "timestamp": DateTime.now().millisecondsSinceEpoch
+    });
+  }
+
+  Future<List<DataDocs>> getData(MessageType type) async {
+    if (!loggedIn) return [];
+    final root = _ref!.doc(_credential!.user!.uid);
+    final response = await root.collection(type.name).get();
+    final docsList = response.docs;
+    final jsonList = docsList.map((docs) => docs.data()).toList();
+    return jsonList.map((docs) => DataDocs.fromMap(docs)).toList().reversed.toList();
+  }
+
+  Future<PrefsCache> getPrefs() async {
+    if (!loggedIn) throw Exception("NOT LOGGINED");
+    final root = _ref!.doc(_credential!.user!.uid);
+    final response = await root.collection("prefs").get();
+    var dataMap = { for (var e in response.docs) e.id: e.data() };
+    
+    return prefs.setMap(dataMap);
+  }
+
+  Future setPrefs(PrefsCache? prefs) async {
+    if (!loggedIn) return;
+    final root = _ref!.doc(_credential!.user!.uid);
+    return await root.collection("prefs").doc("sheet").set((prefs??this.prefs).toMap());
+  }
+
+  Future<void> logout() async {
+    _ref = null;
+    _credential = null;
+    await _box.delete("secret");
+    await authApi.signOut();
+  }
 
 }
 /*

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:line_converter/core/typing.dart';
 import 'package:line_converter/core/parser.dart';
 
@@ -55,19 +56,20 @@ String message2 = '''
 ''';
 
 void main() {
-  final data = MorningProc(
-    personMessage: message1,
-    carIDMessage: message2
-  );
-  List<CarData> result = data.parse();
+  final data = MorningProc();
+  List<CarData> result = data.parse(message1, message2);
 
-  // Pretty print all results
-  result.forEach((element) {
-    print("車輛順序: ${element.order}");
-    print("早車輛編號: ${element.serial.morning} 時間: ${element.time.morning}");
-    print("晚車輛編號: ${element.serial.evening} 時間: ${element.time.evening}");
-    print("來乘客: ${element.passenger.come}");
-    print("回乘客: ${element.passenger.back}");
-  });
-  data.errors.forEach((element) {print("${element.description}: ${element.message}"); });
+
+  for(var item in result) { // Pretty print all results
+    debugPrint("車輛順序: ${item.order}");
+    debugPrint("早車輛編號: ${item.serial.morning} 時間: ${item.time.morning}");
+    debugPrint("晚車輛編號: ${item.serial.evening} 時間: ${item.time.evening}");
+    debugPrint("來乘客: ${item.passenger.come}");
+    debugPrint("回乘客: ${item.passenger.back}");
+  }
+
+  for(var error in data.errors) {
+    debugPrint("${error.description}: ${error.message}");
+  }
+
 }

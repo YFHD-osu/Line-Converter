@@ -1,19 +1,34 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:line_converter/Page/join.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:line_converter/core/database.dart';
+import 'package:line_converter/page/home.dart';
 import 'package:provider/provider.dart';
 
+import 'package:line_converter/widgets.dart';
 import 'package:line_converter/provider/theme.dart';
 
-class SettingPage extends StatelessWidget {
-  SettingPage({super.key});
+class SettingPage extends StatefulWidget {
+  const SettingPage({super.key});
 
-  final sectionList = [
-    const SizedBox(),
+  @override
+  State<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  PrefsCache prefs = PrefsCache.fromMap({});
+  late final sectionList = [
+    const AccountSection(),
     const ThemeSection(),
-    TargetSheet()
+    const SheetSection(),
+    const HighLightSection()
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    FireStore.instance.getPrefs();
+  }
 
   Widget _appBar(BuildContext context) {
     final theme = Theme.of(context);
@@ -25,7 +40,7 @@ class SettingPage extends StatelessWidget {
       backgroundColor: theme.colorScheme.background.withOpacity(0.75),
       titleSpacing: 0,
       leadingWidth: 50,
-      title: Text("設定", style: theme.textTheme.titleMedium),
+      title: const Text("設定"),
       flexibleSpace: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
@@ -44,11 +59,11 @@ class SettingPage extends StatelessWidget {
         child: _appBar(context)
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView.separated(
           itemCount: sectionList.length,
           itemBuilder:(context, index) => sectionList[index],
-          separatorBuilder:(context, _) => const SizedBox(height: 5),
+          separatorBuilder:(context, _) => const SizedBox(height: 10),
         )
       )
     );
@@ -88,48 +103,32 @@ class _ThemeSectionState extends State<ThemeSection> {
   
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 5, 10 ,10),
-      decoration: BoxDecoration(
-        color: themeData.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(10)
-      ),
-      child: Column(
-        children: [
-          const Row(
+    return SectionBase(
+      title: "佈景主題",
+      icon: Icons.display_settings,
+      child: LayoutBuilder(
+        builder: (context, constraint) {
+          final double width = (constraint.maxWidth - 20) / 3;
+          return Row(
             children: [
-              Icon(Icons.display_settings, size: 30),
-              SizedBox(width: 5),
-              Text("佈景主題")
-            ],
-          ),
-          const SizedBox(height: 5),
-          LayoutBuilder(
-            builder: (context, constraint) {
-              final double width = (constraint.maxWidth - 20) / 3;
-              return Row(
-                children: [
-                  ThemeButton(
-                    size: width,
-                    theme: ThemeMode.system,
-                  ),
-                  const SizedBox(width: 10),
-                  ThemeButton(
-                    size: width,
-                    theme: ThemeMode.dark,
-                  ),
-                  const SizedBox(width: 10),
-                  ThemeButton(
-                    size: width,
-                    theme: ThemeMode.light
-                  )
-                ],
-              );
-            }
-          ),
-        ],
-      ),
+              ThemeButton(
+                size: width,
+                theme: ThemeMode.system,
+              ),
+              const SizedBox(width: 10),
+              ThemeButton(
+                size: width,
+                theme: ThemeMode.dark,
+              ),
+              const SizedBox(width: 10),
+              ThemeButton(
+                size: width,
+                theme: ThemeMode.light
+              )
+            ]
+          );
+        }
+      )
     );
   }
 }
@@ -286,33 +285,39 @@ class ThemeIcon extends StatelessWidget {
   }
 }
 
-class TargetSheet extends StatefulWidget {
-  const TargetSheet({super.key});
+class SheetSection extends StatefulWidget {
 
+  const SheetSection({super.key});
   @override
-  State<TargetSheet> createState() => _TargetSheetState();
+  State<SheetSection> createState() => _SheetSectionState();
 }
 
-class _TargetSheetState extends State<TargetSheet> {
+class _SheetSectionState extends State<SheetSection> {
+
+  Future _onCredential(NavigatorState navigator) async {
+    final prefs = FireStore.instance.prefs;
+    final controller = TextEditingController(text: prefs.credential);
+    await navigator.push(MaterialPageRoute(builder:(context) =>
+      FullscreenTextBox(heroTag: " ", controller: controller)));
+    prefs.credential = controller.text;
+    FireStore.instance.setPrefs(prefs);
+    setState(() {});
+  }
+
+  Future _onSheetTitle() async {
+    await showDialog(context: context, builder:(context) => const SheetTitleDialog());
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 5, 10 ,10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(10)
-      ),
+    final navigator = Navigator.of(context);
+    return SectionBase(
+      title: "表單設定",
+      icon: Icons.edit_document,
       child: Column(
         children: [
-          const Row(
-            children: [
-              Icon(Icons.edit_document, size: 30),
-              SizedBox(width: 5),
-              Text("表單設定")
-            ]
-          ),
           const SizedBox(height: 5),
           Row(
             children: [
@@ -322,9 +327,12 @@ class _TargetSheetState extends State<TargetSheet> {
                 text: TextSpan(
                   children: [
                     TextSpan(text: "服務帳號憑證\n",
-                      style: theme.textTheme.labelMedium),
-                    TextSpan(text: "yfhdtw@gmail.com",
-                      style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey))
+                      style: theme.textTheme.labelLarge),
+                    TextSpan(text: FireStore.instance.prefs.clientEmail??"尚未設定",
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.grey,
+                        overflow: TextOverflow.ellipsis
+                      ))
                   ]
                 )
               ),
@@ -332,9 +340,8 @@ class _TargetSheetState extends State<TargetSheet> {
               CupertinoButton(
                 minSize: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                onPressed: () {},
-                child: Text("編輯", 
-                  style: theme.textTheme.labelMedium?.copyWith(color: Colors.green)),
+                onPressed: () => _onCredential(navigator),
+                child: const Text("編輯", style: TextStyle(color: Colors.green))
               )
             ]
           ),
@@ -346,7 +353,7 @@ class _TargetSheetState extends State<TargetSheet> {
                 text: TextSpan(
                   children: [
                     TextSpan(text: "寫入表單名稱\n",
-                      style: theme.textTheme.labelMedium),
+                      style: theme.textTheme.labelLarge),
                     TextSpan(text: "接車表",
                       style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey))
                   ]
@@ -356,40 +363,39 @@ class _TargetSheetState extends State<TargetSheet> {
               CupertinoButton(
                 minSize: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                onPressed: () async {
-                  Navigator.of(context)
-                  .push(MaterialPageRoute(builder:(context) =>
-                    FullscreenTextBox(
-                      heroTag: " ", controller: TextEditingController(),
-                    )));
-                },
-                child: Text("變更", 
-                  style: theme.textTheme.labelMedium?.copyWith(color: Colors.green)),
+                onPressed: _onSheetTitle,
+                child: const Text("變更", style: TextStyle(color: Colors.green))
               )
             ]
           )
         ]
-      )
+      ),
     );
   }
 }
 
-class CertificateDialog extends StatefulWidget {
-  const CertificateDialog({super.key});
+class SheetTitleDialog extends StatefulWidget {
+  const SheetTitleDialog({super.key});
 
   @override
-  State<CertificateDialog> createState() => _CertificateDialogState();
+  State<SheetTitleDialog> createState() => _SheetTitleDialogState();
 }
 
-class _CertificateDialogState extends State<CertificateDialog> {
+class _SheetTitleDialogState extends State<SheetTitleDialog> {
+  List<String> titleList = [];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('AlertDialog Title'),
-      content: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Text("asdf"),
+      title: const Text('選擇表單工作區'),
+      content: ListView(
+        children: const  [
+          Text("TODO")
+        ]
       ),
       actions: <Widget>[
         TextButton(
@@ -399,6 +405,190 @@ class _CertificateDialogState extends State<CertificateDialog> {
           },
         ),
       ],
+    );
+  }
+}
+
+class AccountSection extends StatefulWidget {
+  const AccountSection({super.key});
+
+  @override
+  State<AccountSection> createState() => _AccountSectionState();
+}
+
+class _AccountSectionState extends State<AccountSection> {
+
+  Future<void> _logoutClick() async {
+    await FireStore.instance.logout();
+    setState(() {});
+  }
+
+  Future<void> _loginClick(bool isLogin) async {
+    final update = await showDialog<bool?>(
+      context: context,
+      builder: (context) => AccountDialog(isLogin: isLogin)
+    );
+    if (update??false) setState(() {});
+  }
+
+  Widget _loginWidget() {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 80, height: 80,
+              clipBehavior: Clip.hardEdge,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+              child: Image.network(FireStore.instance.imageUrl)
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(FireStore.instance.username??"", style: theme.textTheme.titleLarge),
+                Text(FireStore.instance.email??"", style: theme.textTheme.labelMedium),
+              ]
+            ),
+            const Spacer(),
+            CupertinoButton(
+              child: const Text("編輯", style: TextStyle(color: Colors.green)),
+              onPressed: () {}
+            )
+          ],
+        ),
+        SizedBox(
+          height: 40, width: double.infinity,
+          child: TextButton(
+            style: const ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(Colors.red)
+            ),
+            onPressed: _logoutClick,
+            child: const Text("登出")
+          )
+        )
+      ]
+    );
+  }
+
+  Widget _logoutWidget() {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 40,
+                child: TextButton(
+                  onPressed: () => _loginClick(true),
+                  child: const Text("登入")
+                )
+              )
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SizedBox(
+                height: 40,
+                child: TextButton(
+                  onPressed: () => _loginClick(false),
+                  child: const Text("註冊")
+                )
+              )
+            )
+          ]
+        )
+      ]
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLogin = FireStore.instance.loggedIn;
+
+    return SectionBase(
+      title: "帳號資訊", 
+      icon: Icons.account_circle,
+      child: isLogin ? _loginWidget() : _logoutWidget(),
+    );
+  }
+}
+
+class HighLightSection extends StatelessWidget {
+  const HighLightSection({super.key});
+
+  Future _onCredential(NavigatorState navigator) async {
+    final prefs = FireStore.instance.prefs;
+    final controller = TextEditingController(text: prefs.highlight);
+    await navigator.push(MaterialPageRoute(builder:(context) =>
+      FullscreenTextBox(heroTag: " ", controller: controller)));
+    prefs.highlight = controller.text;
+    await FireStore.instance.setPrefs(prefs);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SectionBase(
+      title: "醒目標示",
+      icon: Icons.highlight,
+      child: Row(
+        children: [
+          const Icon(Icons.edit, size: 45),
+          const SizedBox(width: 5),
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(text: "變更醒目標示人員\n",
+                  style: theme.textTheme.labelLarge),
+                TextSpan(text: "用空格隔開每個人名",
+                  style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey))
+              ]
+            )
+          ),
+          const Spacer(),
+          CupertinoButton(
+            minSize: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            onPressed: () => _onCredential(Navigator.of(context)),
+            child: const Text("變更", style: TextStyle(color: Colors.green))
+          )
+        ]
+      )
+    );
+  }
+}
+
+class SectionBase extends StatelessWidget {
+  final Widget child;
+  final String title;
+  final IconData icon;
+
+  const SectionBase({super.key, required this.child, required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 5, 10 ,10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(10)
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 35),
+              const SizedBox(width: 5),
+              Text(title, style: theme.textTheme.bodyLarge)
+            ]
+          ),
+          child
+        ]
+      ),
     );
   }
 }

@@ -1,8 +1,7 @@
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:line_converter/core/database.dart';
 import 'package:line_converter/core/typing.dart';
 
 const List weekString = ['', '一', '二', '三', '四', '五', '六', '日'];
@@ -13,38 +12,40 @@ class GSheetExpection{
 }
 
 class GSheet {
-  late final SheetsApi api;
-  late final String credential;
-  late final List<String> verifySheetTitle;
-  late final AutoRefreshingAuthClient client;
+  final DriveApi _driveAPI;
+  final SheetsApi _sheetApi;
+  List<String> verifySheetTitle;
 
-  Future<void> initialize({String? credential}) async {
-    if (credential == null) {
-      final perfs = EncryptedSharedPreferences();
-      credential = await perfs.getString('certificate');
-    }
+  GSheet({
+    required DriveApi driveAPI,
+    required SheetsApi sheetApi,
+    this.verifySheetTitle = const [],
+  }) : _sheetApi = sheetApi, _driveAPI = driveAPI;
 
-    client = await clientViaServiceAccount(
+  static Future<GSheet> fromFireStore() async {
+    final credential = FireStore.instance.getPrefs();
+    final client = await clientViaServiceAccount(
       ServiceAccountCredentials.fromJson(credential),
       ['https://www.googleapis.com/auth/spreadsheets',
       'https://www.googleapis.com/auth/drive.readonly',
       'https://www.googleapis.com/auth/spreadsheets.readonly'] 
     );
-    api = SheetsApi(client);
-    this.credential = credential;
-
-    return;
+    return GSheet(
+      sheetApi: SheetsApi(client),
+      driveAPI: DriveApi(client)
+    );
   }
 
-  Future<Sheet?> sheetByName({String? title}) async {
-    if (title == null) {
-      final perfs = EncryptedSharedPreferences();
-      title = await perfs.getString('spreadsheetTitle');
-    }
-    final sheetsRes = api.spreadsheets;
-    final sheetID = await EncryptedSharedPreferences().getString('sheetID');
+  Future<Sheet?> sheetByName({String? title, String? id}) async {
+    // if (title == null) {
+    //   final perfs = EncryptedSharedPreferences();
+    //   title = await perfs.getString('spreadsheetTitle');
+    // }
+    final sheetsRes = _sheetApi.spreadsheets;
+    
+    // final sheetID = await EncryptedSharedPreferences().getString('sheetID');
     // print(sheetID);
-    final spreadSheet = await sheetsRes.get(sheetID, includeGridData: true);
+    final spreadSheet = await sheetsRes.get("sheetID", includeGridData: true);
     final sheets = spreadSheet.sheets?.where((Sheet sheet) => sheet.properties?.title == title).toList();
 
     if (sheets == null) throw GSheetExpection(message: 'Sheet named $title not found');
@@ -175,9 +176,7 @@ class GSheet {
         )
       ]
     );
-    final encryptedSharedPreferences = EncryptedSharedPreferences();
-    final sheetID = await encryptedSharedPreferences.getString('sheetID');
-    return await api.spreadsheets.values.batchUpdate(req, sheetID); 
+    return await _sheetApi.spreadsheets.values.batchUpdate(req, "sheetID"); 
   }
 
   Future<BatchUpdateSpreadsheetResponse> resetSheet(Sheet sheet, GridRange clearRange) async {
@@ -207,9 +206,7 @@ class GSheet {
         mergeReq(mergeRange) + 
         sizeReq(clearRange)
     );
-    final encryptedSharedPreferences = EncryptedSharedPreferences();
-    final sheetID = await encryptedSharedPreferences.getString('sheetID');
-    return await api.spreadsheets.batchUpdate(req, sheetID); 
+    return await _sheetApi.spreadsheets.batchUpdate(req, "sheetID");
   }
 
   // If there are no error, null will return
@@ -220,15 +217,14 @@ class GSheet {
     /* Check whether the file is a sheet */
     late final Spreadsheet response;
     try{
-      response = await api.spreadsheets.get(sheetId);
+      response = await _sheetApi.spreadsheets.get(sheetId);
     } on DetailedApiRequestError catch(e) {
       return '無法找到該表單(${e.status})';
     }
 
     /* Check access to the file */
     try{
-      final driveAPI = DriveApi(client);
-      await driveAPI.permissions.list(sheetId);
+      await _driveAPI.permissions.list(sheetId);
     } on DetailedApiRequestError catch (_) {
       return '請授予服務帳號編輯表單的權限';
     }
