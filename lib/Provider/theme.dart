@@ -1,20 +1,18 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode theme = ThemeMode.system;
+  final storage = const FlutterSecureStorage();
   
   Future<ThemeMode> fetch() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int index = prefs.getInt('themeMode') ?? 0;
+    final index = int.parse((await storage.read(key: "themeMode"))??"0");
     theme = ThemeMode.values[index];
     return theme;
   }
 
   Future<void> toggle(ThemeMode themeMode) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('themeMode', themeMode.index);
+    storage.write(key: "themeMode", value: themeMode.index.toString());
     theme = themeMode;
     notifyListeners();
   }
@@ -28,25 +26,25 @@ class ThemePack {
     primaryColor: Colors.white,
     textTheme: const TextTheme(
       bodySmall: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Colors.white, fontSize: 19),
-      bodyLarge: TextStyle(color: Colors.white, fontSize: 25),
+      bodyMedium: TextStyle(color: Colors.white),
+      bodyLarge: TextStyle(color: Colors.white),
       labelSmall: TextStyle(color: Colors.white),
-      labelMedium: TextStyle(color: Colors.white, fontSize: 19),
-      labelLarge: TextStyle(color: Colors.white, fontSize: 25),
-      titleSmall: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
-      titleMedium: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-      titleLarge: TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),
+      labelMedium: TextStyle(color: Colors.white),
+      labelLarge: TextStyle(color: Colors.white),
+      titleSmall: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      titleLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isCollapsed: true,
-      fillColor: const Color.fromRGBO(28, 28, 31, 1),
+      fillColor: const Color.fromRGBO(44, 44, 46, 1),
       contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
       hintStyle: const TextStyle(fontSize: 18),
       labelStyle: const TextStyle(color: Colors.white, fontSize: 18),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: Colors.white, width: 2),
+        borderSide: const BorderSide(color: Colors.grey, width: 2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
@@ -85,11 +83,10 @@ class ThemePack {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          Colors.green
-        ),
-        padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 10)
+        backgroundColor: MaterialStateProperty.all(Colors.green),
+        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
         )
       )
     ),
@@ -106,14 +103,14 @@ class ThemePack {
     scaffoldBackgroundColor: const Color.fromRGBO(242, 242, 247, 1),
     textTheme: const TextTheme(
       bodySmall: TextStyle(color: Colors.black),
-      bodyMedium: TextStyle(color: Colors.black, fontSize: 19),
-      bodyLarge: TextStyle(color: Colors.black, fontSize: 25),
+      bodyMedium: TextStyle(color: Colors.black),
+      bodyLarge: TextStyle(color: Colors.black),
       labelSmall: TextStyle(color: Colors.black),
-      labelMedium: TextStyle(color: Colors.black, fontSize: 19),
-      labelLarge: TextStyle(color: Colors.black, fontSize: 25),
-      titleSmall: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
-      titleMedium: TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
-      titleLarge: TextStyle(color: Colors.black, fontSize: 34, fontWeight: FontWeight.bold),
+      labelMedium: TextStyle(color: Colors.black),
+      labelLarge: TextStyle(color: Colors.black),
+      titleSmall: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      titleLarge: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -162,11 +159,10 @@ class ThemePack {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          Colors.green
-        ),
-        padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 10)
+        backgroundColor: MaterialStateProperty.all(Colors.green),
+        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
         )
       )
     ),
