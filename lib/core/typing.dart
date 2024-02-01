@@ -1,8 +1,7 @@
 enum MessageType {morning, evening}
 
 class ParseException {
-  late final String message;
-  late final String description;
+  final String message, description;
 
   ParseException({
     required this.message,
@@ -121,14 +120,14 @@ class CarData {
     );
   }
 
-  factory CarData.fromEvening(int order, int serial, List<String> passenger, List<int> orderList) {
+  factory CarData.fromEvening(int order, int serial, List<String> pax, List<int> orderList) {
     return CarData(
       type: MessageType.evening,
       time: Time(),
       order: order,
       serial: Serial(evening: serial),
       addTime: DateTime.now(), 
-      passenger: Passenger(back: passenger), 
+      passenger: Passenger(back: pax.map((e) => e.replaceAll(" ", "")).toList()), 
       orderList: orderList
     );
   }
@@ -153,7 +152,7 @@ class CarData {
       serial: Serial.fromMap(res["serial"]),
       addTime: DateTime.fromMillisecondsSinceEpoch(res["addTime"]),
       passenger: Passenger.fromMap(res["passenger"]),
-      orderList: res["orderList"]
+      orderList: (res["orderList"] as List).map((e) => int.parse(e)).toList()
     );
   }
 
@@ -163,8 +162,8 @@ class CarData {
     required int? backSerialData,
     required String? comeTimeData,
     required String? backTimeData,
-    required List<String>? comePassengerData,
-    required List<String>? backPassengerData,
+    required List<String>? comePax,
+    required List<String>? backPax,
     required DateTime addTime
   }) {
     return CarData(
@@ -180,8 +179,8 @@ class CarData {
       addTime: addTime,
       type: MessageType.morning,
       passenger: Passenger(
-        come: comePassengerData,
-        back: backPassengerData
+        come: comePax?.map((e) => e.replaceAll(" ", "")).toList(),
+        back: backPax?.map((e) => e.replaceAll(" ", "")).toList()
       ),
       orderList: []
     );
@@ -191,7 +190,7 @@ class CarData {
     required int order,
     required DateTime addTime,
     required int? backSerialData,
-    required List<String>? backPassengerData,
+    required List<String>? backPax,
   }) {
     return CarData(
       order: order,
@@ -199,16 +198,16 @@ class CarData {
       serial: Serial(evening: backSerialData),
       addTime: addTime,
       type: MessageType.evening,
-      passenger: Passenger(back: backPassengerData),
+      passenger: Passenger(back: backPax?.map((e) => e.replaceAll(" ", "")).toList()),
       orderList: []
     );
   }
 
-  void mergePax({required bool isCome, List<String>? data}) {
+  void mergePax({required bool isCome, List<String>? pax}) {
     if (isCome) {
-      passenger.come ??= data;
+      passenger.come ??= pax?.map((e) => e.replaceAll(" ", "")).toList();
     } else {
-      passenger.back ??= data;
+      passenger.back ??= pax?.map((e) => e.replaceAll(" ", "")).toList();
     }
   }
 }
@@ -220,17 +219,18 @@ class Passenger{
   factory Passenger.fromType(bool isCome, List<String> pax) {
     switch(isCome) {
       case true: 
-        return Passenger(come: pax);
+        return Passenger(come: pax.map((e) => e.replaceAll(" ", "")).toList());
       case false: 
-        return Passenger(back: pax);
+        return Passenger(back: pax.map((e) => e.replaceAll(" ", "")).toList());
     }
   }
 
   factory Passenger.fromMap(Map res) {
-    return Passenger(
-      come: res["come"],
-      back: res["back"]
+    final result = Passenger(
+      come: (res["come"] as List?)?.map((e) => e.toString()).toList(),
+      back: (res["back"] as List?)?.map((e) => e.toString()).toList()
     );
+    return result;
   }
 
   Map<String, dynamic> toMap() {

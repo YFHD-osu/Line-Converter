@@ -2,53 +2,43 @@ import 'dart:convert';
 import 'package:line_converter/core/typing.dart';
 
 class MainPraser {
-  late final String personMessage;
-  late final String carIDMessage;
+  List<CarData> data = [];
+  List<ParseException> error = [];
 
-  MainPraser({
-    required this.personMessage,
-    required this.carIDMessage
-  });
-
-  MessageType determine() {
+  MessageType determine(String person, String carID) {
     final exp = RegExp(r'(,|\.|，|、|\d| )');
-    if (personMessage.replaceAll(exp, "").isEmpty || carIDMessage.replaceAll(exp, "").isEmpty ) {
+    if (person.replaceAll(exp, "").isEmpty || carID.replaceAll(exp, "").isEmpty) {
       return MessageType.evening;
     }
     return MessageType.morning;
   }
 
-  (List<CarData>, List<ParseException>) parse () {
-    switch (determine()) {
+  (List<CarData>, List<ParseException>) parse({required String person, required String carID}) {
+    switch (determine(person, carID)) {
       case MessageType.morning: {
-        final result = MorningProc(personMessage: personMessage, carIDMessage: carIDMessage);
-        return (result.parse(), result.errors);
+        final result = MorningProc();
+        return (data = result.parse(person, carID), error = result.errors);
       }
       case MessageType.evening: {
-        final result = EveningProc(personMessage: personMessage, carIDMessage: carIDMessage);
-        return (result.parse(), result.errors);
+        final result = EveningProc();
+        return (data = result.parse(person, carID), error = result.errors);
       }
     }
   }
 }
 
 class MorningProc {
-  late String carIDMessage;
-  late String personMessage;
+  late String carIDMessage, personMessage;
   final RegExp splitExp = RegExp(r'(，|。|、|,|\.)');
 
-  MorningProc({
-    required this.personMessage,
-    required this.carIDMessage
-  });
-
   Map<int, CarData> dataMap = {}; 
-
   List<ParseException> errors = [];
   
-  List<ParseException> getErrors () => errors;
+  List<ParseException> getErrors() => errors;
 
-  List<CarData> parse() {
+  List<CarData> parse(String person, String carID) {
+    carIDMessage = carID;
+    personMessage = person;
     switch2Correct();
 
     final List<int> passengerIndexRange = RegExp(r'\d{0,}?車(回|來)?').allMatches(personMessage)
@@ -174,7 +164,7 @@ class MorningProc {
       .split(splitExp);
     
     if (order == null) {
-      errors.add(ParseException(message: message,description: '無法辨別車輛順序'));
+      errors.add(ParseException(message: message, description: '無法辨別車輛順序'));
       return;
     }
     
@@ -188,7 +178,7 @@ class MorningProc {
       orderList: [],
     );
 
-    dataMap[order]!.mergePax(isCome: isCome, data: pax);
+    dataMap[order]!.mergePax(isCome: isCome, pax: pax);
     return;
   }
 
@@ -209,15 +199,12 @@ class EveningProc {
   late String carIDMessage;
   late String personMessage;
 
-  EveningProc({
-    required this.carIDMessage,
-    required this.personMessage
-  });
-
   List<CarData> result = [];
   List<ParseException> errors = [];
 
-  List<CarData> parse() {
+  List<CarData> parse(String person, String carID) {
+    carIDMessage = carID;
+    personMessage = person;
     switch2Correct();
 
     final orderList = getOrderList();
