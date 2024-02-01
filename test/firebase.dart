@@ -19,13 +19,14 @@ void main() async {
 
   final resp = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "test@gmail.com", password: "123456");
   final uid = resp.user!.uid;
-  print("A");
+  debugPrint(uid.toString());
+  debugPrint("A");
   final ref = FirebaseFirestore.instance.collection('collectionPath');
-  print("B");
+  debugPrint("B");
   var querySnapshot = await ref.get();
-  print("C");
-  print(querySnapshot.docs);
-  print("D");
+  debugPrint("C");
+  debugPrint(querySnapshot.docs.toString());
+  debugPrint("D");
   // final r = await dbc.doc("bzxnFzvOTHT3CgiticOe").get();
 
 }
