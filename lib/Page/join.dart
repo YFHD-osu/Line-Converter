@@ -16,59 +16,8 @@ class JoinPage extends StatefulWidget {
 class _JoinPageState extends State<JoinPage> {
   final parser = MainPraser();
   final controller = ExpansionTileController();
-  final carIDText = TextEditingController(text: r"""
-  1車24067
-  2車25552
-  3車上午88368
-        下午14446
-  4車上午24090
-        下午25441
-  5車上午24016
-        下午88368
-  6車上午14446
-        下午24016
-  7車上午25441
-        下午24067
-  8車上午25552
-        下午14227
-  9車下午25552
-  """);
-  final personText = TextEditingController(text: """
-  1車來7:40
-  義邦，玲嫥，彩玉，思瑩
-  1車回
-  月鳳，奮力，何巧，葉妹
-  2車來7:20
-  進城，夏枝，桂妹，廖萬
-  2車回
-  廖萬，夏枝，孟昇，志銘
-  3車來7:45
-  麗慧，李義雄，蘇珠，水盛
-  3車回
-  文輝，蕭碧霞，光永，秀鳳
-  4車來7:40
-  玉蘭，黃庚，雪鑾，蕭碧霞
-  4車回
-  桂妹，秀金，黃粉，進城
-  5車來7:40
-  宏輝，文輝，介淦
-  5車回
-  宏輝，雅雯，麗慧
-  6車來7:50
-  孟昇，柏宇，月鳳，何巧
-  6車回
-  李義雄，蘇珠，玉山，如山
-  7車來7:50
-  如山，玉山，秀金，黃粉
-  7車回
-  思瑩，淑純，豐美
-  8車來8:15
-  謝敏，奮力
-  8車回
-  黃庚，水盛，雪鑾
-  9車回
-  阿梅，玲嫥
-  """);
+  final carIDText = TextEditingController();
+  final personText = TextEditingController();
 
   void _doParser(String value) {
     parser.parse(person: personText.text, carID: carIDText.text);
