@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:line_converter/core/typing.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,7 +23,6 @@ String getCredential() {
 }
 
 List<List<String>> getMorningList(List<CarData> data) {
-  final int length = data.length;
   for (int i=0; i<maxColumn ; i++) {
 
   }
@@ -46,9 +46,11 @@ void main() async {
     "typ": "JWT"
   };
 
+  header;
+
   final url = Uri.parse('https://sheets.googleapis.com/v4/spreadsheets/$sheetID/values/$sheetName?alg=RS256&typ=JWT');
 
   final response = await http.get(url, headers: payload);
-  print(response.body);
+  debugPrint(response.body);
 
 }

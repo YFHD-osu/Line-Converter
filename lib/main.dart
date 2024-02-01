@@ -1,43 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:universal_html/html.dart' as html;
 
+import 'package:line_converter/page/home.dart';
 import 'package:line_converter/core/database.dart';
 import 'package:line_converter/provider/theme.dart';
-// import 'package:line_converter/Library/data_manager.dart';
-import 'package:line_converter/Page/home.dart';
 ThemeProvider themeProvider = ThemeProvider();
+
+const opts = FirebaseOptions(
+  apiKey: "AIzaSyBrNfABqMoBVsbekhMjIP0z4i4swkqRzlM",
+  authDomain: "dulcet-cat-359804.firebaseapp.com",
+  projectId: "dulcet-cat-359804",
+  storageBucket: "dulcet-cat-359804.appspot.com",
+  messagingSenderId: "751966961116",
+  appId: "1:751966961116:web:661c61fe7cf1fa23176319"
+);
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  
+  if (kIsWeb) { // Disable context menu if is web
+    html.document.onContextMenu.listen((event) => event.preventDefault());
+    html.document.body!.addEventListener('contextmenu', (event) => event.preventDefault());
+  }
 
-  const opts = FirebaseOptions(
-    apiKey: "AIzaSyBrNfABqMoBVsbekhMjIP0z4i4swkqRzlM",
-    authDomain: "dulcet-cat-359804.firebaseapp.com",
-    projectId: "dulcet-cat-359804",
-    storageBucket: "dulcet-cat-359804.appspot.com",
-    messagingSenderId: "751966961116",
-    appId: "1:751966961116:web:661c61fe7cf1fa23176319"
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, DeviceOrientation.portraitDown
+  ]);
+
+  await Hive.initFlutter();
   await Firebase.initializeApp(options: opts);
   await FireStore.instance.inititalze();
+  await themeProvider.fetch(); // Initialize theme mode
 
-  final resp = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "test@gmail.com", password: "123456");
-  final ref = FirebaseFirestore.instance.collection('userdata');
-  var querySnapshot = ref.doc(resp.user!.uid);
-  print(querySnapshot.get);
-  
-  await themeProvider.fetch(); // Initialize theme mode from shared_preference
   // await dbManager.initialize(); // Initialize sqlite database
   runApp(const MyApp());
 
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  /*SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);*/
 }
 
 class MyApp extends StatelessWidget {
@@ -51,6 +54,7 @@ class MyApp extends StatelessWidget {
         final themeProvider = Provider.of<ThemeProvider>(context);
         
         return MaterialApp(
+          title: "車表轉換",
           home: const HomePage(),
           theme: ThemePack.light,
           darkTheme: ThemePack.dark,
