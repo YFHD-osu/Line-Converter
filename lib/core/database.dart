@@ -25,7 +25,7 @@ class PrefsCache extends ChangeNotifier{
   factory PrefsCache.fromMap(Map res) {
     return PrefsCache(
       sheetTitle: res["sheet"]?["sheetTitle"]??"",
-      credential: res["sheet"]?["credential"]??"",
+      credential: res["sheet"]?["credential"]??"{}",
       sheetID:  res["sheet"]?["sheetID"]??"",
       highlight: res["sheet"]?["highlight"]??"",
     );
@@ -33,7 +33,7 @@ class PrefsCache extends ChangeNotifier{
 
   PrefsCache setMap(Map res) {
     sheetTitle= res["sheet"]?["sheetTitle"]??"";
-    credential= res["sheet"]?["credential"]??"";
+    credential= res["sheet"]?["credential"]??"{}";
     sheetID= res["sheet"]?["sheetID"]??"";
     highlight = res["sheet"]?["highlight"]??"";
     notifyListeners();
@@ -82,13 +82,12 @@ class FireStore {
     return _instance!;
   }
 
-  PrefsCache prefs = PrefsCache.fromMap({});
   CollectionReference? _ref;
   UserCredential? _credential;
+  PrefsCache prefs = PrefsCache.fromMap({});
 
-  final authApi = FirebaseAuth.instance;
-  final storage = const FlutterSecureStorage();
   late final Box _box;
+  final authApi = FirebaseAuth.instance;
 
   bool get loggedIn => !(_credential == null || _ref == null);
   String? get username => _credential?.user?.displayName;
