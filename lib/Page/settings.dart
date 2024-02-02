@@ -27,7 +27,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-    FireStore.instance.getPrefs();
+    if(FireStore.instance.loggedIn) FireStore.instance.getPrefs();
   }
 
   Widget _appBar(BuildContext context) {
@@ -313,6 +313,8 @@ class _SheetSectionState extends State<SheetSection> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final navigator = Navigator.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
     return SectionBase(
       title: "表單設定",
       icon: Icons.edit_document,
@@ -323,20 +325,20 @@ class _SheetSectionState extends State<SheetSection> {
             children: [
               const Icon(Icons.account_box_outlined, size: 45),
               const SizedBox(width: 5),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: "服務帳號憑證\n",
-                      style: theme.textTheme.labelLarge),
-                    TextSpan(text: FireStore.instance.prefs.clientEmail??"尚未設定",
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("服務帳號憑證", style: theme.textTheme.labelLarge),
+                  SizedBox(
+                    width: mediaQuery.size.width - 143.3,
+                    child: Text(FireStore.instance.prefs.clientEmail??"尚未設定",
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey,
                         overflow: TextOverflow.ellipsis
-                      ))
-                  ]
-                )
+                    ))
+                  )
+                ]
               ),
-              const Spacer(),
               CupertinoButton(
                 minSize: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -433,6 +435,7 @@ class _AccountSectionState extends State<AccountSection> {
 
   Widget _loginWidget() {
     final theme = Theme.of(context);
+
     return Column(
       children: [
         Row(
@@ -531,6 +534,7 @@ class HighLightSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return SectionBase(
       title: "醒目標示",
       icon: Icons.highlight,
