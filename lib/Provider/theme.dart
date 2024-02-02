@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive/hive.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode theme = ThemeMode.system;
-  final storage = const FlutterSecureStorage();
+  Box? _box;
   
   Future<ThemeMode> fetch() async {
-    final index = int.parse((await storage.read(key: "themeMode"))??"0");
+    _box ??= await Hive.openBox('theme');
+    final index = int.parse(await _box!.get("themeMode", defaultValue: "0"));
     theme = ThemeMode.values[index];
     return theme;
   }
 
   Future<void> toggle(ThemeMode themeMode) async {
-    storage.write(key: "themeMode", value: themeMode.index.toString());
+    _box!.put("themeMode", themeMode.index.toString());
     theme = themeMode;
     notifyListeners();
   }
