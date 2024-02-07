@@ -18,18 +18,22 @@ jobs:
 
       # - name: Enable Flutter Web
       #   run: flutter config --enable-web
-
-      - name: Download Dependencies
+      
+      - name: Check folders
         run: |
           pwd
-          flutter clean
-          flutter pub get
           ls -a
           cd ./lib
           ls -a
           cd ./page
           ls -a 
           cat home.dart
+
+      - name: Download Dependencies
+        run: |
+          pwd
+          flutter clean
+          flutter pub get
           
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
