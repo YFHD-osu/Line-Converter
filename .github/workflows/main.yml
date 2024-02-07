@@ -23,7 +23,7 @@ jobs:
         run: |
           PWDPATH=$(pwd)
           ls -a
-          cd /home/runner/work/Line-Converter
+          cd /home/runner/work/Line-Converter/Line-Converter
           ls -a
           cd ./page
           ls -a 
