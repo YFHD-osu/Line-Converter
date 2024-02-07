@@ -21,6 +21,7 @@
   <meta name="description" content="A new Flutter project.">
 
   <!-- iOS meta tags & icons -->
+  <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="line_converter_flutter">
@@ -87,12 +88,15 @@
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
       const elem = document.getElementById("mainbody")
       elem.style.backgroundColor = "#FFFFFF"
+      document.querySelector('meta[name="theme-color"]').setAttribute('content',  '#FFFFFF');
     } 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       const newColorScheme = event.matches ? "#000000" : "#FFFFFF";
       console.log(event.matches)
       const elem = document.getElementById("mainbody")
       elem.style.backgroundColor = newColorScheme
+
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', event.matches ? "#000000" : "#FFFFFF");
     });
   </script>
   
