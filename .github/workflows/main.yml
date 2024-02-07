@@ -29,7 +29,8 @@ jobs:
       
       - name: Copy build to docs
         run: |
-          del "docs\*.*" /F /Q
+          Remove-Item .\docs -Recurse -Force
+          New-Item -Path .\docs -ItemType Directory
           XCOPY build\web\*.* docs\ /E /H /C /Y
 
       - name: Deploy
