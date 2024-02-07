@@ -21,7 +21,8 @@ jobs:
       
       - name: Check folders
         run: |
-          pwd
+          PWDPATH=$(pwd)
+          cd $PWDPATH
           ls -a
           cd ./lib
           ls -a
