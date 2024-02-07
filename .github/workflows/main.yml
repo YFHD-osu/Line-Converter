@@ -24,6 +24,7 @@ jobs:
           pwd
           flutter clean
           flutter pub get
+          ls -a
 
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
