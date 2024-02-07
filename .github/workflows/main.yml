@@ -25,6 +25,9 @@ jobs:
           flutter clean
           flutter pub get
           ls -a
+          cd lib
+          cd page
+          cat home.dart
 
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
