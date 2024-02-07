@@ -16,8 +16,8 @@ class DataViewPage extends StatefulWidget {
 }
 
 class _DataViewPageState extends State<DataViewPage> {
-  bool getImageBusy = false, highlight = true;
   String highlightString = "";
+  bool getImageBusy = false, highlight = true;
   final screenshotController = ScreenshotController();
   int visMode = 0;
 
@@ -35,16 +35,21 @@ class _DataViewPageState extends State<DataViewPage> {
   }
 
   late var screenShot = Builder(builder: (context) {
-    return Column(
-      children: widget.data.data.map((e) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: DataCard(data: e, visMode: visMode, highlight: highlight)
-      )).toList()
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: <Widget>[const SizedBox(height: 5)] + widget.data.data.map((e) => 
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: DataCard(data: e, visMode: visMode, highlight: highlight)
+          )
+        ).toList() + <Widget>[const SizedBox(height: 5)]
+      )
     );
   });
 
-  void _download(List<int> bytes, {String? filename}) {
-    final base64 = base64Encode(bytes); // Encode our file in base64
+  void _download(String base64, {String? filename}) {
+     // Encode our file in base64
     // Create the link with the file
     final anchor =
       html.AnchorElement(href: 'data:application/octet-stream;base64,$base64')
@@ -67,17 +72,25 @@ class _DataViewPageState extends State<DataViewPage> {
   }
 
   Future _imageOut() async {
+    late final String base64;
     setState(() => getImageBusy = true);
-    final bytes = await screenshotController.captureFromLongWidget(
-      InheritedTheme.captureAll(
-          context, Material(child: screenShot)),
-      delay: const Duration(milliseconds: 100),
-      context: context,
-      constraints: const BoxConstraints(minWidth: 500),
-      pixelRatio: 5.0
-    );
+    if (!widget.data.checkBase64(visMode, highlight)) {
+      final bytes = await screenshotController.captureFromLongWidget(
+        InheritedTheme.captureAll(context, Material(child: screenShot)),
+        delay: const Duration(milliseconds: 100),
+        context: context,
+        constraints: const BoxConstraints(minWidth: 500),
+        pixelRatio: 5.0
+      );
+      base64 = base64Encode(bytes);
+      widget.data.setBase64(visMode, highlight, base64);
+      // FireStore.instance.setImage(widget.data);
+    } else {
+      base64 = widget.data.getBase64(visMode, highlight)!;
+    }
+    
     setState(() => getImageBusy = false);
-    _download(bytes.toList(), filename: _getFilename());
+    _download(base64, filename: _getFilename());
   }
 
   Future _highlight() async {
@@ -139,8 +152,9 @@ class _DataViewPageState extends State<DataViewPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 50),
-              _dataColumn()
+              const SizedBox(height: 55),
+              _dataColumn(),
+              const SizedBox(height: 10)
             ]
           )
         )
