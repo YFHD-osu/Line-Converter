@@ -16,7 +16,7 @@
       "flutterMode": "profile"
     },
     {
-      "name": "Line-Converter (canvaskit mode)",
+      "name": "Line-Converter (canvaskit relase)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
