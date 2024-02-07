@@ -222,6 +222,19 @@ class DataCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    
+    if (visMode==1 && (data.passenger.come??[]).isEmpty) {
+      return const SizedBox();
+    }
+
+    if (visMode==2 && (data.passenger.back??[]).isEmpty) {
+      return const SizedBox();
+    }
+
+    if (visMode==3 && (data.passenger.come??[]).isEmpty && (data.passenger.back??[]).isEmpty) {
+      return const SizedBox();
+    }
+
     return Container(
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.all(10),
