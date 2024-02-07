@@ -16,10 +16,15 @@
       "flutterMode": "profile"
     },
     {
-      "name": "Line-Converter (release mode)",
+      "name": "Line-Converter (canvaskit mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
+      "toolArgs": [
+        "--dart-define", "BROWSER_IMAGE_DECODING_ENABLED=false",
+        "--web-port=5000",
+        "--web-renderer canvaskit"
+      ]
     },
     {
       "name": "Line-Converter (canvaskit debug)",
