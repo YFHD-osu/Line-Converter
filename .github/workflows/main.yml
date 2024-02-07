@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
@@ -26,6 +26,11 @@ jobs:
           
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
+      
+      - name: Copy build to docs
+        run: |
+          del "docs\*.*" /F /Q
+          XCOPY build\web\*.* docs\ /E /H /C /Y
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
