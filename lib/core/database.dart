@@ -7,7 +7,6 @@ import 'package:hive/hive.dart';
 import 'package:line_converter/core/typing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:line_converter/core/extension.dart';
 
 class PrefsCache extends ChangeNotifier{
@@ -59,19 +58,38 @@ class AuthResponse {
 
 class DataDocs {
   final int id;
+  final MessageType type;
   final List<CarData> data;
   final DateTime timestamps;
+  Map<String, String> images;
 
-  DataDocs({required this.id, required this.data, required this.timestamps});
+  DataDocs({required this.type, required this.id, required this.data, required this.timestamps, required this.images});
   
   factory DataDocs.fromMap(Map res) {
-    final result = DataDocs(
+    final data = (res["data"] as List).map((e) => CarData.fromMap(e)).toList();
+    return DataDocs(
+      data: data,
       id: res["id"],
-      data: (jsonDecode(res["data"]) as List).map((e) => CarData.fromMap(e)).toList(),
+      type: data.first.type,
+      images: {},
+      // images: ((res["images"] as Map?)??{}).map((k, v) => MapEntry(k.toString(), v.toString())),
       timestamps: DateTime.fromMillisecondsSinceEpoch(res["timestamp"])
     );
-    return result;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "base64": base64,
+      "timestamp": timestamps.millisecondsSinceEpoch,
+      "data": data.map((e) => e.toMap()).toList()
+      // "images": images
+    };
+  }
+
+  String? getBase64(int visMode, bool highlight) => images["$visMode-$highlight"];
+  bool checkBase64(int visMode, bool highlight) => images.containsKey("$visMode-$highlight");
+  void setBase64(int visMode, bool highlight, String base64) => images["$visMode-$highlight"] = base64;
 }
 
 class FireStore {
@@ -200,6 +218,15 @@ class FireStore {
     if (!loggedIn) return;
     final root = _ref!.doc(_credential!.user!.uid);
     return await root.collection("prefs").doc("sheet").set((prefs??this.prefs).toMap());
+  }
+
+  Future<void> setImage(DataDocs docs) async {
+    if (!loggedIn) return;
+    final root = _ref!.doc(_credential!.user!.uid);
+    return await root
+      .collection(docs.type.name)
+      .doc(docs.id.toString())
+      .set(docs.toMap());
   }
 
   Future<void> logout() async {
