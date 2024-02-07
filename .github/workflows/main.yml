@@ -10,31 +10,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # - uses: actions/checkout@v3
-      # - uses: subosito/flutter-action@v2
-      #   with:
-      #     channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
-      # - run: flutter --version
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
+      - run: flutter --version
 
-      # - name: Enable Flutter Web
-      #   run: flutter config --enable-web
-      
-      - name: Check folders
-        run: |
-          PWDPATH=$(pwd)
-          cat $PWDPATH
-          ls -a
-          cd /home/runner/work/Line-Converter/Line-Converter
-          ls -a
-          cd ./page
-          ls -a 
-          cat home.dart
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
 
       - name: Download Dependencies
         run: |
           pwd
           flutter clean
           flutter pub get
+          flutter test
           
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
