@@ -26,12 +26,6 @@ jobs:
           
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
-      
-      - name: Copy build to docs
-        run: |
-          Remove-Item .\docs -Recurse -Force
-          New-Item -Path .\docs -ItemType Directory
-          XCOPY build\web\*.* docs\ /E /H /C /Y
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
