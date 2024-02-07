@@ -22,6 +22,7 @@ jobs:
       - name: Check folders
         run: |
           PWDPATH=$(pwd)
+          cat $PWDPATH
           ls -a
           cd /home/runner/work/Line-Converter/Line-Converter
           ls -a
