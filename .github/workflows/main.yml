@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build GitHub Page Web
 
 on:
   workflow_dispatch:
@@ -10,14 +10,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
-      - run: flutter --version
+      # - uses: actions/checkout@v3
+      # - uses: subosito/flutter-action@v2
+      #   with:
+      #     channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
+      # - run: flutter --version
 
-      - name: Enable Flutter Web
-        run: flutter config --enable-web
+      # - name: Enable Flutter Web
+      #   run: flutter config --enable-web
 
       - name: Download Dependencies
         run: |
@@ -25,10 +25,12 @@ jobs:
           flutter clean
           flutter pub get
           ls -a
-          cd lib
-          cd page
+          cd ./lib
+          ls -a
+          cd ./page
+          ls -a 
           cat home.dart
-
+          
       - name: Build
         run: flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line_Converter/" --web-renderer canvaskit
 
