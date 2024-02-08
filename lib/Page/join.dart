@@ -6,6 +6,9 @@ import 'package:line_converter/core/parser.dart';
 import 'package:line_converter/core/typing.dart';
 import 'package:line_converter/widgets.dart';
 
+final carIDText = TextEditingController();
+final personText = TextEditingController();
+
 class JoinPage extends StatefulWidget {
   const JoinPage({super.key});
 
@@ -16,15 +19,20 @@ class JoinPage extends StatefulWidget {
 class _JoinPageState extends State<JoinPage> {
   final parser = MainPraser();
   final controller = ExpansionTileController();
-  final carIDText = TextEditingController();
-  final personText = TextEditingController();
 
-  void _doParser(String value) {
+  void _doParser(String? value) {
     parser.parse(person: personText.text, carID: carIDText.text);
     if (parser.data.isNotEmpty && parser.error.isEmpty) {
       controller.collapse();
     }
     if(mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    parser.parse(person: personText.text, carID: carIDText.text);
+    setState(() {});
   }
   
   Widget _appBar(BuildContext context) {
@@ -58,8 +66,6 @@ class _JoinPageState extends State<JoinPage> {
         child: Column(
           children: [
             InputSection(
-              timeText: personText,
-              serialText: carIDText,
               controller: controller,
               onChanged: _doParser
             ),
@@ -74,15 +80,12 @@ class _JoinPageState extends State<JoinPage> {
 }
 
 class InputSection extends StatelessWidget {
-  final TextEditingController timeText, serialText;
   
   final Function(String) onChanged;
   final ExpansionTileController controller;
   
   const InputSection({
-    super.key, 
-    required this.timeText, 
-    required this.serialText, 
+    super.key,
     required this.controller, 
     required this.onChanged
   });
@@ -123,7 +126,7 @@ class InputSection extends StatelessWidget {
                   child: TextBox(
                     hintText: "輸入車輛時間資訊",
                     heroTag: "timeCtrl",
-                    controller: timeText,
+                    controller: carIDText,
                     haveToolButtons: false,
                     onChanged: onChanged,
                   )
@@ -134,7 +137,7 @@ class InputSection extends StatelessWidget {
                   child: TextBox(
                     hintText: "輸入車輛代碼資訊",
                     heroTag: "serialCtrl",
-                    controller: serialText,
+                    controller: personText,
                     haveToolButtons: false,
                     onChanged: onChanged
                   )
@@ -144,41 +147,6 @@ class InputSection extends StatelessWidget {
           ],
         )
       )
-      /*Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.keyboard, size: 35),
-              Text(" 輸入資訊")
-            ]
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              SizedBox(
-                width: size, height: size,
-                child: TextBox(
-                  hintText: "輸入車輛時間資訊",
-                  heroTag: "timeCtrl",
-                  controller: timeText,
-                  haveToolButtons: false,
-                )
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: size, height: size,
-                child: TextBox(
-                  hintText: "輸入車輛代碼資訊",
-                  heroTag: "serialCtrl",
-                  controller: serialText,
-                  haveToolButtons: false,
-                )
-              )
-            ]
-          )
-        ]
-      )*/
     );
   }
 }

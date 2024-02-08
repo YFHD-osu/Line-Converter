@@ -221,7 +221,7 @@ class IndexTile extends StatelessWidget {
             SizedBox(
               height: 100,
               child: Ink.image(
-                fit: BoxFit.fitWidth,
+                fit: BoxFit.cover,
                 image: const AssetImage('assets/img_breakfast.jpg')
               )
             ),
