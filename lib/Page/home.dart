@@ -282,7 +282,15 @@ class _DataViewState extends State<DataView> {
         itemCount: data.length,
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
-          return IndexTile(data: data[index]);
+          final item = data[index];
+          return Dismissible(
+            key: Key(item.id.toString()),
+            onDismissed: (direction) async {
+              FireStore.instance.removeData(widget.type, item.id);
+              setState(() {data.removeAt(index);});
+            },
+            child: IndexTile(data: data[index])
+          );
         }
       )
     )
