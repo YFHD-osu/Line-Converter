@@ -183,7 +183,7 @@ class FireStore {
 
   Future addData(List<CarData> context) async {
     if (!loggedIn) return;
-    final data = jsonEncode(context.map((e) => e.toMap()).toList());
+    final data = context.map((e) => e.toMap()).toList();
     final root = _ref!.doc(_credential!.user!.uid);
 
     final type = context.first.type.name;
