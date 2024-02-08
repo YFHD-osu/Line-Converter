@@ -205,6 +205,12 @@ class FireStore {
     return jsonList.map((docs) => DataDocs.fromMap(docs)).toList().reversed.toList();
   }
 
+  Future<void> removeData(MessageType type, int id) async {
+    if (!loggedIn) return;
+    final root = _ref!.doc(_credential!.user!.uid);
+    return root.collection(type.name).doc(id.toString()).delete();
+  }
+
   Future<PrefsCache> getPrefs() async {
     if (!loggedIn) throw Exception("NOT LOGGINED");
     final root = _ref!.doc(_credential!.user!.uid);
