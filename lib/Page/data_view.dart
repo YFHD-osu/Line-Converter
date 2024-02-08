@@ -93,17 +93,6 @@ class _DataViewPageState extends State<DataViewPage> {
     _download(base64, filename: _getFilename());
   }
 
-  Future _highlight() async {
-    // final perfs = EncryptedSharedPreferences();
-    // highlightString = await perfs.getString('highlightName');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _highlight();
-  }
-
   Widget _appBar() {
     final theme = Theme.of(context);
     return AppBar(
