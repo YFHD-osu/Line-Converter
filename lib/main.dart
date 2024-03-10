@@ -6,9 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:universal_html/html.dart' as html;
 
-import '/page/home.dart';
-import '/core/database.dart';
-import '/provider/theme.dart';
+import 'package:line_converter/page/home.dart';
+import 'package:line_converter/core/database.dart';
+import 'package:line_converter/provider/theme.dart';
 
 ThemeProvider themeProvider = ThemeProvider();
 
