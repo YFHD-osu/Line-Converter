@@ -1,5 +1,3 @@
-import '';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,9 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:universal_html/html.dart' as html;
 
-import 'package:line_converter/page/home.dart';
-import 'package:line_converter/core/database.dart';
-import 'package:line_converter/provider/theme.dart';
+import '/page/home.dart';
+import '/core/database.dart';
+import '/provider/theme.dart';
 
 ThemeProvider themeProvider = ThemeProvider();
 
