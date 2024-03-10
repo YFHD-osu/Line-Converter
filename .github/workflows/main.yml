@@ -17,12 +17,11 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
-      - run: |
-          flutter --version
-          flutter config --enable-web
-          
+
       - name: Build web
         run: |
+          flutter --version
+          flutter config --enable-web
           flutter clean
           flutter pub get
           flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line-Converter/" --web-renderer canvaskit
