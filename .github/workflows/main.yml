@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Install Checkout@v3
         uses: actions/checkout@v3
@@ -16,7 +16,7 @@ jobs:
       - name: Install Flutter 
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
+          channel: 'beta' # or: 'beta', 'dev', 'master' (or 'main')
 
       - name: Build web
         run: |
@@ -24,6 +24,7 @@ jobs:
           flutter config --enable-web
           flutter clean
           flutter pub get
+          flutter pub upgrade
           flutter build web --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line-Converter/" --web-renderer canvaskit
 
       - name: Deploy to Github Pages
