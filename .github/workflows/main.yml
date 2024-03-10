@@ -25,12 +25,6 @@ jobs:
           flutter clean
           flutter pub get
           flutter pub upgrade
-          ls -a
-          cd lib
-          ls -a
-          cd home
-          ls -a
-          
           flutter build web -t lib/main.dart --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line-Converter/" --web-renderer canvaskit
 
       - name: Deploy to Github Pages
