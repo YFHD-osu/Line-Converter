@@ -32,7 +32,7 @@ class NavigationItem extends BottomNavigationBarItem{
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -239,7 +239,7 @@ class IndexTile extends StatelessWidget {
             )
           ]
         ),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DataViewPage(data: data)))
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DataViewPage(res: data)))
       )
     );
   }

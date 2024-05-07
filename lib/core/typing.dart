@@ -152,7 +152,7 @@ class CarData {
       serial: Serial.fromMap(res["serial"]),
       addTime: DateTime.fromMillisecondsSinceEpoch(res["addTime"]),
       passenger: Passenger.fromMap(res["passenger"]),
-      orderList: (res["orderList"] as List).map((e) => int.parse(e)).toList()
+      orderList: List<int>.from(res["orderList"])
     );
   }
 

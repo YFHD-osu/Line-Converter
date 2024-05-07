@@ -1,12 +1,13 @@
 import 'dart:convert';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hive/hive.dart';
-import 'package:line_converter/core/typing.dart';
+import 'package:smartlogger/smartlogger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+
+import 'package:line_converter/core/typing.dart';
 import 'package:line_converter/core/extension.dart';
 
 class PrefsCache extends ChangeNotifier{
@@ -66,6 +67,7 @@ class DataDocs {
   DataDocs({required this.type, required this.id, required this.data, required this.timestamps, required this.images});
   
   factory DataDocs.fromMap(Map res) {
+
     final data = (res["data"] as List).map((e) => CarData.fromMap(e)).toList();
     return DataDocs(
       data: data,
@@ -198,10 +200,12 @@ class FireStore {
 
   Future<List<DataDocs>> getData(MessageType type) async {
     if (!loggedIn) return [];
+    
     final root = _ref!.doc(_credential!.user!.uid);
     final response = await root.collection(type.name).get();
     final docsList = response.docs;
     final jsonList = docsList.map((docs) => docs.data()).toList();
+    Log.d("Loaded ${jsonList.length} ${type.name} data");
     return jsonList.map((docs) => DataDocs.fromMap(docs)).toList().reversed.toList();
   }
 
