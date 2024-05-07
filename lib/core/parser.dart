@@ -192,7 +192,6 @@ class MorningProc {
       carIDMessage = pMsg;
     }
   }
-
 }
 
 class EveningProc {

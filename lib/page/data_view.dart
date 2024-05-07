@@ -7,9 +7,9 @@ import 'package:screenshot/screenshot.dart';
 import 'package:universal_html/html.dart' as html;
 
 class DataViewPage extends StatefulWidget {
-  final DataDocs data;
+  final DataDocs res;
 
-  const DataViewPage({Key? key, required this.data} ) : super(key: key);
+  const DataViewPage({super.key, required this.res} );
 
   @override
   State<DataViewPage> createState() => _DataViewPageState();
@@ -22,11 +22,15 @@ class _DataViewPageState extends State<DataViewPage> {
   int visMode = 0;
 
   Widget _dataColumn() {
+    final orderList = widget.res.data.first.orderList;
     final mediaQuery = MediaQuery.of(context);
+    final sortedCarList = orderList.isEmpty ?  
+      widget.res.data : orderList.map((e) => widget.res.data[e-1]);
+
     return Wrap(
       spacing: 10,
       direction: Axis.vertical,
-      children: widget.data.data.map((e) => SizedBox(
+      children: sortedCarList.map((e) => SizedBox(
         width: mediaQuery.size.width - 20,
         child: DataCard(data: e, visMode: visMode, highlight: highlight)
       )
@@ -38,7 +42,7 @@ class _DataViewPageState extends State<DataViewPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
-        children: <Widget>[const SizedBox(height: 5)] + widget.data.data.map((e) => 
+        children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: DataCard(data: e, visMode: visMode, highlight: highlight)
@@ -66,15 +70,15 @@ class _DataViewPageState extends State<DataViewPage> {
   }
 
   String _getFilename() {
-    final ts = widget.data.timestamps;
-    final type = widget.data.data.first.type.index;
+    final ts = widget.res.timestamps;
+    final type = widget.res.data.first.type.index;
     return "${ts.year}-${ts.month}-${ts.day}-${["早班車", "晚班車"][type]}.png";
   }
 
   Future _imageOut() async {
     late final String base64;
     setState(() => getImageBusy = true);
-    if (!widget.data.checkBase64(visMode, highlight)) {
+    if (!widget.res.checkBase64(visMode, highlight)) {
       final bytes = await screenshotController.captureFromLongWidget(
         InheritedTheme.captureAll(context, Material(child: screenShot)),
         delay: const Duration(milliseconds: 100),
@@ -83,10 +87,10 @@ class _DataViewPageState extends State<DataViewPage> {
         pixelRatio: 5.0
       );
       base64 = base64Encode(bytes);
-      widget.data.setBase64(visMode, highlight, base64);
+      widget.res.setBase64(visMode, highlight, base64);
       // FireStore.instance.setImage(widget.data);
     } else {
-      base64 = widget.data.getBase64(visMode, highlight)!;
+      base64 = widget.res.getBase64(visMode, highlight)!;
     }
     
     setState(() => getImageBusy = false);

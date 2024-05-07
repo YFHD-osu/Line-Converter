@@ -144,7 +144,7 @@ class InputSection extends StatelessWidget {
                 )
               ]
             )
-          ],
+          ]
         )
       )
     );
@@ -161,12 +161,28 @@ class DataCard extends StatelessWidget {
   Widget _personView(BuildContext context, List<String>? passenger, bool isCome) {
     final theme = Theme.of(context);
     final hMembers = FireStore.instance.prefs.highlight;
+    final carSerial = (isCome ? data.serial.morning : data.serial.evening).toString();
 
     if (passenger == null) { return const SizedBox(); }
 
     return Row(
       children: [
-        Icon(isCome ? Icons.sunny : Icons.bedtime),
+        Container(
+          padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+          decoration: BoxDecoration(
+            color: isCome ? Colors.yellow.shade800 : Colors.purple.shade800,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20),
+              Padding(
+                padding: const EdgeInsets.only(top: 3, left: 3),
+                child: Text(carSerial, style: theme.textTheme.bodyLarge)
+              )
+            ]
+          )
+        ),
         const SizedBox(width: 10),
         SizedBox(
           height: 34,
@@ -284,8 +300,9 @@ class ResultSection extends StatelessWidget {
             child: ListView.separated(
               itemCount: parser.data.length,
               separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemBuilder:(context, index) {
-                final data = parser.data[index];
+              itemBuilder: (context, index) {
+                final order = parser.data.first.orderList;
+                final data = parser.data[order[index]-1];
                 return DataCard(data: data);
               },
             ) 
