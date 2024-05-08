@@ -178,7 +178,12 @@ class DataCard extends StatelessWidget {
               Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20),
               Padding(
                 padding: const EdgeInsets.only(top: 3, left: 3),
-                child: Text(carSerial, style: theme.textTheme.bodyLarge)
+                child: Text(
+                  carSerial,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white
+                  )
+                )
               )
             ]
           )
