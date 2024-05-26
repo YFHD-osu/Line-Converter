@@ -175,7 +175,11 @@ class DataCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20),
+              Icon(
+                size: 20,
+                color: Colors.white,
+                isCome ? Icons.sunny : Icons.bedtime
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 3, left: 3),
                 child: Text(
@@ -307,7 +311,11 @@ class ResultSection extends StatelessWidget {
               separatorBuilder: (context, index) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final order = parser.data.first.orderList;
+                if (order.isEmpty) {
+                  order.addAll(List.generate(parser.data.length, (i) => i+1));
+                }
                 final data = parser.data[order[index]-1];
+
                 return DataCard(data: data);
               },
             ) 
