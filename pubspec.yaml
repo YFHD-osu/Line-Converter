@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.0 <=3.19.6"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,32 +29,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+
   provider: ^6.0.3
   path_provider: ^2.0.11
+
+  # Hive database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   
   http: ^1.2.0
   cupertino_icons: ^1.0.0
   screenshot: ^2.1.0
   flutter_native_splash: ^2.3.2
   flutter_launcher_icons: ^0.13.1
-  
-  sqflite: ^2.3.0
-  sqflite_common_ffi: ^2.3.0+2
 
   googleapis: ^13.0.0
   googleapis_auth: ^1.4.1
-
   firebase_auth: ^4.16.0
   firebase_core: ^2.24.2
   cloud_firestore: ^4.14.0
-  encrypt: ^5.0.3
 
-  super_clipboard: ^0.8.4
+  encrypt: ^5.0.3
   universal_html: ^2.2.4
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+  super_clipboard: ^0.8.4
   device_info_plus: ^10.1.0
   web: ^0.5.1
   smartlogger: ^1.1.4+1
