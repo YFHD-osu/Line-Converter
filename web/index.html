@@ -29,26 +29,13 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png"/>
-  
 
   <title>載入中...</title>
   <link rel="manifest" href="manifest.json">
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
 </head>
-<body style="background-color:#000000; overflow: hidden" id="mainbody">
-  <script>
-    document.body.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-    });
-  </script>
-  
-  <!-- Loading Animation -->
+
+<body style="background-color:#000000; overflow: hidden">
+
   <style> 
     .loader {
       width: 50px;
@@ -99,21 +86,7 @@
       document.querySelector('meta[name="theme-color"]').setAttribute('content', event.matches ? "#000000" : "#FFFFFF");
     });
   </script>
-  
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
+
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

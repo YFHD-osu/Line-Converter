@@ -41,34 +41,32 @@ void main() async{
 
   // await dbManager.initialize(); // Initialize sqlite database
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => 
-    ChangeNotifierProvider(
-      create: (context) => themeProvider,
-      builder: (context, _) {
-        final themeProvider = Provider.of<ThemeProvider>(context);
-        
-        return MaterialApp(
-          title: "車表轉換",
-          home: const HomePage(),
-          theme: ThemePack.light,
-          darkTheme: ThemePack.dark,
-          themeMode: themeProvider.theme,
-          debugShowCheckedModeBanner: false,
-          builder: (context, child) {
-            final mediaQueryData = MediaQuery.of(context);
-            return MediaQuery(
-              data: mediaQueryData,
-              child: child!,
-            );
-          }
-        );
-      }
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+    create: (context) => themeProvider,
+    builder: (context, _) {
+      final themeProvider = Provider.of<ThemeProvider>(context);
+      
+      return MaterialApp(
+        title: "車表轉換",
+        home: const HomePage(),
+        theme: ThemePack.light,
+        darkTheme: ThemePack.dark,
+        themeMode: themeProvider.theme,
+        debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          final mediaQueryData = MediaQuery.of(context);
+          return MediaQuery(
+            data: mediaQueryData,
+            child: child!,
+          );
+        }
+      );
+    }
+  );
+}

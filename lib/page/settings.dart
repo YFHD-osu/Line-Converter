@@ -36,8 +36,8 @@ class _SettingPageState extends State<SettingPage> {
       elevation: 0,
       centerTitle: false,
       excludeHeaderSemantics: true,
-      surfaceTintColor: theme.colorScheme.background,
-      backgroundColor: theme.colorScheme.background.withOpacity(0.75),
+      surfaceTintColor: theme.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
       titleSpacing: 0,
       leadingWidth: 50,
       title: const Text("設定"),
@@ -240,7 +240,7 @@ class ThemeIcon extends StatelessWidget {
                     width: maxHeight / 3.0415,
                     margin: const EdgeInsets.only(bottom: 5),
                     decoration: BoxDecoration(
-                      color: themeData.colorScheme.surface,
+                      color: themeData.colorScheme.secondary,
                       borderRadius: BorderRadius.circular(10)
                     )
                   )
@@ -445,7 +445,14 @@ class _AccountSectionState extends State<AccountSection> {
               clipBehavior: Clip.hardEdge,
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-              child: Image.network(FireStore.instance.imageUrl)
+              child: Builder(
+                builder: (context) {
+                  if (FireStore.instance.imageUrl.isEmpty) {
+                    return const Icon(Icons.no_accounts, size: 70);
+                  }
+                  return Image.network(FireStore.instance.imageUrl);
+                }
+              )
             ),
             const SizedBox(width: 10),
             Column(
@@ -466,7 +473,7 @@ class _AccountSectionState extends State<AccountSection> {
           height: 40, width: double.infinity,
           child: TextButton(
             style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll(Colors.red)
+              backgroundColor: WidgetStatePropertyAll(Colors.red)
             ),
             onPressed: _logoutClick,
             child: const Text("登出")

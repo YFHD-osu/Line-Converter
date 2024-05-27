@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'dart:ui';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:line_converter/core/database.dart';
 import 'package:line_converter/page/join.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:universal_html/html.dart' as html;
 
 class DataViewPage extends StatefulWidget {
@@ -16,10 +17,10 @@ class DataViewPage extends StatefulWidget {
 }
 
 class _DataViewPageState extends State<DataViewPage> {
-  String highlightString = "";
-  bool getImageBusy = false, highlight = true;
-  final screenshotController = ScreenshotController();
   int visMode = 0;
+  String highlightString = "";
+  final screenshotKey = GlobalKey();
+  bool getImageBusy = false, highlight = true;
 
   Widget _dataColumn() {
     final orderList = widget.res.data.first.orderList;
@@ -27,30 +28,36 @@ class _DataViewPageState extends State<DataViewPage> {
     final sortedCarList = orderList.isEmpty ?  
       widget.res.data : orderList.map((e) => widget.res.data[e-1]);
 
-    return Wrap(
-      spacing: 10,
-      direction: Axis.vertical,
-      children: sortedCarList.map((e) => SizedBox(
-        width: mediaQuery.size.width - 20,
-        child: DataCard(data: e, visMode: visMode, highlight: highlight)
+    return RepaintBoundary(
+      key: screenshotKey,
+      child: Wrap(
+        spacing: 10,
+        direction: Axis.vertical,
+        children: sortedCarList.map((e) => SizedBox(
+          width: mediaQuery.size.width - 20,
+          child: DataCard(data: e, visMode: visMode, highlight: highlight)
+        )
+        ).toList()
       )
-      ).toList()
     );
   }
 
-  late var screenShot = Builder(builder: (context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: DataCard(data: e, visMode: visMode, highlight: highlight)
-          )
-        ).toList() + <Widget>[const SizedBox(height: 5)]
-      )
-    );
-  });
+  // late var screenShot = RepaintBoundary(
+  //   key: screenshotKey,
+  //   child: Builder(builder: (context) {
+  //     return Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+  //       child: Column(
+  //         children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 5),
+  //             child: DataCard(data: e, visMode: visMode, highlight: highlight)
+  //           )
+  //         ).toList() + <Widget>[const SizedBox(height: 5)]
+  //       )
+  //     );
+  //   })
+  // );
 
   void _download(String base64, {String? filename}) {
      // Encode our file in base64
@@ -78,21 +85,26 @@ class _DataViewPageState extends State<DataViewPage> {
   Future _imageOut() async {
     late final String base64;
     setState(() => getImageBusy = true);
+    
     if (!widget.res.checkBase64(visMode, highlight)) {
-      final bytes = await screenshotController.captureFromLongWidget(
-        InheritedTheme.captureAll(context, Material(child: screenShot)),
-        delay: const Duration(milliseconds: 100),
-        context: context,
-        constraints: const BoxConstraints(minWidth: 500),
-        pixelRatio: 5.0
-      );
-      base64 = base64Encode(bytes);
+      RenderRepaintBoundary boundary = screenshotKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage();
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+      
+      // final bytes = await screenshotController.captureFromLongWidget(
+      //   InheritedTheme.captureAll(context, Material(child: screenShot)),
+      //   delay: const Duration(milliseconds: 100),
+      //   context: context,
+      //   constraints: const BoxConstraints(minWidth: 500),
+      //   pixelRatio: 5.0
+      // );
+      base64 = base64Encode(pngBytes);
       widget.res.setBase64(visMode, highlight, base64);
       // FireStore.instance.setImage(widget.data);
     } else {
       base64 = widget.res.getBase64(visMode, highlight)!;
     }
-    
     setState(() => getImageBusy = false);
     _download(base64, filename: _getFilename());
   }
@@ -105,8 +117,8 @@ class _DataViewPageState extends State<DataViewPage> {
       leadingWidth: 50,
       centerTitle: false,
       excludeHeaderSemantics: true,
-      surfaceTintColor: theme.colorScheme.background,
-      backgroundColor: theme.colorScheme.background.withOpacity(0.75),
+      surfaceTintColor: theme.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
       title: const Text("詳細資料"),
       actions: [
         IconButton(
@@ -126,7 +138,7 @@ class _DataViewPageState extends State<DataViewPage> {
       ],
       flexibleSpace: ClipRect(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+          filter: ui.ImageFilter.blur(sigmaX: 7, sigmaY: 7),
           child: Container(color: Colors.transparent))
       )
     );

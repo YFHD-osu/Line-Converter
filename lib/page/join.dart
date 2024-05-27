@@ -41,8 +41,8 @@ class _JoinPageState extends State<JoinPage> {
       elevation: 0,
       centerTitle: false,
       excludeHeaderSemantics: true,
-      surfaceTintColor: theme.colorScheme.background,
-      backgroundColor: theme.colorScheme.background.withOpacity(0.75),
+      surfaceTintColor: theme.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
       titleSpacing: 0,
       leadingWidth: 50,
       title: const Text("加入資料"),
@@ -387,7 +387,7 @@ class _FunctionButtonState extends State<FunctionButton> {
               height: 50,
               child: TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(_color(storeStage))
+                  backgroundColor: WidgetStatePropertyAll(_color(storeStage))
                 ),
                 onPressed: (storeStage == 2) ? (){} : () async {
                   if (!FireStore.instance.loggedIn) {
@@ -414,7 +414,7 @@ class _FunctionButtonState extends State<FunctionButton> {
               height: 50,
               child: TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(_color(sheetStage))
+                  backgroundColor: WidgetStatePropertyAll(_color(sheetStage))
                 ),
                 onPressed: () async {
 

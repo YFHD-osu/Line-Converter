@@ -19,7 +19,6 @@ class ThemeProvider extends ChangeNotifier {
   }
 }
 
-
 class ThemePack {
   static final dark = ThemeData(
     useMaterial3: true,
@@ -56,13 +55,14 @@ class ThemePack {
       backgroundColor: Colors.grey.shade800 
     ),
     colorScheme: ColorScheme(
+      surface: Colors.black, // Status bar
+      onSurface: Colors.white, // Icons color
+      surfaceDim: Colors.black, // A color that typically appears behind scrollable content.
+      surfaceBright: Colors.white,
+
       brightness: Brightness.dark, // The overall brightness of this color scheme.
-      background: Colors.black, // A color that typically appears behind scrollable content.
       primary: Colors.white, // The color displayed most frequently across your app’s screens and components. (Floating button)
       onPrimary: Colors.white, // A color that's clearly legible when drawn on primary. (App bar)
-      onBackground: Colors.white,
-      surface: Colors.green, // Status bar
-      onSurface: Colors.white, // Icons color
       error: Colors.grey.shade300, 
       onError: Colors.grey.shade300,
       secondary: Colors.green, 
@@ -79,23 +79,23 @@ class ThemePack {
     dropdownMenuTheme: DropdownMenuThemeData(
       textStyle: const TextStyle(fontSize: 18),
       menuStyle: MenuStyle(
-        backgroundColor: MaterialStatePropertyAll(Colors.grey.shade900)
+        backgroundColor: WidgetStatePropertyAll(Colors.grey.shade900)
       )
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.green),
-        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        backgroundColor: WidgetStateProperty.all(Colors.green),
+        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
         )
       )
     ),
     switchTheme: SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) => 
-        states.contains(MaterialState.disabled) ? Colors.grey.shade100 : Colors.white),
-      trackColor: MaterialStateProperty.resolveWith((states) =>
-        states.contains(MaterialState.selected) ? Colors.green : Colors.grey))
+      thumbColor: WidgetStateProperty.resolveWith((states) => 
+        states.contains(WidgetState.disabled) ? Colors.grey.shade100 : Colors.white),
+      trackColor: WidgetStateProperty.resolveWith((states) =>
+        states.contains(WidgetState.selected) ? Colors.green : Colors.grey))
   );
 
   static final light = ThemeData(
@@ -129,13 +129,14 @@ class ThemePack {
       backgroundColor: Colors.grey.shade200 
     ),
     colorScheme: const ColorScheme(
+      surface: Colors.white, // Status bar
+      onSurface: Colors.black, // Icons color
+      surfaceDim: Color.fromRGBO(242, 242, 247, 1), // A color that typically appears behind scrollable content.
+      surfaceBright: Colors.black,
+
       brightness: Brightness.dark, // The overall brightness of this color scheme.
-      background: Color.fromRGBO(242, 242, 247, 1), // A color that typically appears behind scrollable content.
       primary: Colors.black, // The color displayed most frequently across your app’s screens and components. (Floating button)
       onPrimary: Colors.black, // A color that's clearly legible when drawn on primary. (App bar)
-      onBackground: Colors.black,
-      surface: Colors.green, // Status bar
-      onSurface: Colors.black, // Icons color
       error: Color.fromRGBO(242, 242, 247, 1), 
       onError: Color.fromRGBO(242, 242, 247, 1), 
       secondary: Colors.green, 
@@ -152,7 +153,7 @@ class ThemePack {
     dropdownMenuTheme: DropdownMenuThemeData(
       textStyle: const TextStyle(fontSize: 18),
       menuStyle: MenuStyle(
-        backgroundColor: MaterialStatePropertyAll(Colors.grey.shade900)
+        backgroundColor: WidgetStatePropertyAll(Colors.grey.shade900)
       )
     ),
     iconTheme: const IconThemeData(
@@ -160,17 +161,17 @@ class ThemePack {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.green),
-        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        backgroundColor: WidgetStateProperty.all(Colors.green),
+        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 10)),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
         )
       )
     ),
     switchTheme: SwitchThemeData(
       // thumbColor: MaterialStateProperty.all(primary),
-      trackColor: MaterialStateProperty.resolveWith((states) =>
-      states.contains(MaterialState.selected) ? Colors.green : Colors.grey)
+      trackColor: WidgetStateProperty.resolveWith((states) =>
+      states.contains(WidgetState.selected) ? Colors.green : Colors.grey)
     )
   );
 }

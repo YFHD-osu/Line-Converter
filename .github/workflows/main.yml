@@ -17,7 +17,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable' # or: 'beta', 'dev', 'master' (or 'main')
-          flutter-version: 3.19.6
+          flutter-version: 3.22.1
 
       - name: Build web
         run: |
@@ -26,7 +26,9 @@ jobs:
           flutter clean
           flutter pub get
           flutter pub upgrade
-          flutter build web -t lib/main.dart --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false --release --base-href "/Line-Converter/" --web-renderer canvaskit
+          flutter build web -t lib/main.dart --release --base-href "/Line-Converter/" --wasm
+
+        # Without WSAM: flutter build web -t lib/main.dart --release --base-href "/Line-Converter/" --web-renderer canvaskit --dart-define=BROWSER_IMAGE_DECODING_ENABLED=false
 
       - name: Deploy to Github Pages
         uses: peaceiris/actions-gh-pages@v3

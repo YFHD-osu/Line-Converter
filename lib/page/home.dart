@@ -45,12 +45,12 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
     return AppBar(
       elevation: 0,
+      titleSpacing: 0,
+      leadingWidth: 0,
       centerTitle: false,
       excludeHeaderSemantics: true,
-      surfaceTintColor: theme.colorScheme.background,
-      backgroundColor: theme.colorScheme.background.withOpacity(0.75),
-      leadingWidth: 0,
-      titleSpacing: 0,
+      surfaceTintColor: theme.colorScheme.surfaceDim,
+      backgroundColor: theme.colorScheme.surfaceDim.withOpacity(0.75),
       title: Row(
         children: [
           Container(
@@ -289,6 +289,22 @@ class _DataViewState extends State<DataView> {
               FireStore.instance.removeData(widget.type, item.id);
               setState(() {data.removeAt(index);});
             },
+            background: Container(
+              padding: const EdgeInsets.all(5),
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: RichText(
+                text: const TextSpan(
+                  children: [
+                    WidgetSpan(child: Icon(Icons.delete, color:Colors.white)),
+                    TextSpan(text: "刪除", style: TextStyle(color:Colors.white, fontSize: 20))
+                  ]
+                )
+              )
+            ),
             child: IndexTile(data: data[index])
           );
         }
