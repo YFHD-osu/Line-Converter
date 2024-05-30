@@ -212,8 +212,6 @@ class IndexTile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      clipBehavior: Clip.hardEdge,
-      borderRadius: BorderRadius.circular(10),
       child: InkWell(
         child: Stack(
           alignment: Alignment.bottomLeft,
@@ -274,16 +272,15 @@ class _DataViewState extends State<DataView> {
 
   Widget _tiles() => Padding(
     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-    child: ClipRRect(
-      clipBehavior: Clip.hardEdge,
-      borderRadius: BorderRadius.circular(15),
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        itemCount: data.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          final item = data[index];
-          return Dismissible(
+    child: ListView.separated(
+      padding: EdgeInsets.zero,
+      itemCount: data.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      itemBuilder: (context, index) {
+        final item = data[index];
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Dismissible(
             key: Key(item.id.toString()),
             onDismissed: (direction) async {
               FireStore.instance.removeData(widget.type, item.id);
@@ -306,9 +303,9 @@ class _DataViewState extends State<DataView> {
               )
             ),
             child: IndexTile(data: data[index])
-          );
-        }
-      )
+          )
+        );
+      }
     )
   );
 

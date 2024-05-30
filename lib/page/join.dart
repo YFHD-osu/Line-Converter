@@ -302,6 +302,9 @@ class ResultSection extends StatelessWidget {
               separatorBuilder: (context, index) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final order = parser.data.first.orderList;
+                if (order.isEmpty) {
+                  order.addAll(List.generate(parser.data.length, (i) => i+1));
+                }
                 final data = parser.data[order[index]-1];
                 return DataCard(data: data);
               },
