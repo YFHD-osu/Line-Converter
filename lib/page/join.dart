@@ -175,10 +175,10 @@ class DataCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20),
+              Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20, color: Colors.white),
               Padding(
                 padding: const EdgeInsets.only(top: 3, left: 3),
-                child: Text(carSerial, style: theme.textTheme.bodyLarge)
+                child: Text(carSerial, style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white))
               )
             ]
           )
