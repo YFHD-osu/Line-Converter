@@ -134,6 +134,10 @@ class _DataViewPageState extends State<DataViewPage> {
             visMode = (visMode+1)>2 ? 0 : visMode+1;
             setState(() {});
           }
+        ),
+        IconButton(
+          icon: const Icon(Icons.download),
+          onPressed: getImageBusy ? null : _imageOut,
         )
       ],
       flexibleSpace: ClipRect(
@@ -152,9 +156,9 @@ class _DataViewPageState extends State<DataViewPage> {
         preferredSize: const Size.fromHeight(50),
         child: _appBar()
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
               const SizedBox(height: 55),
@@ -163,12 +167,13 @@ class _DataViewPageState extends State<DataViewPage> {
             ]
           )
         )
-      ),
-      floatingActionButton: FloatingActionButton(
+      )
+        
+      /*floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: getImageBusy ? null : _imageOut,
         child: getImageBusy ? const CircularProgressIndicator() : const Icon(Icons.download)
-      )
+      )*/
     );
   }
 }

@@ -255,6 +255,14 @@ class DataView extends StatefulWidget {
 class _DataViewState extends State<DataView> {
   List<DataDocs> data = [];
 
+
+  @override
+  void initState() {
+    super.initState();
+    FireStore.instance.getData(widget.type)
+    .then((e) { setState(() => data = e ); });
+  }
+
   Widget _empty() {
     final mediaQuery = MediaQuery.of(context);
     return SizedBox(
@@ -311,14 +319,8 @@ class _DataViewState extends State<DataView> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FireStore.instance.getData(widget.type),
-      builder:(context, snapshot) {
-        data = snapshot.data??[];
-        if (data.isEmpty) return _empty();
-        return _tiles();
-      },
-    );
+    if (data.isEmpty) return _empty();
+    return _tiles();
   }
 }
 

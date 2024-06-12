@@ -158,48 +158,46 @@ class DataCard extends StatelessWidget {
 
   const DataCard({super.key, required this.data, this.visMode = 0, this.highlight = true});
 
-  Widget _personView(BuildContext context, List<String>? passenger, bool isCome) {
+  Widget _personView(BuildContext context, List<String>? passenger, bool isCome, BoxConstraints constraints) {
     final theme = Theme.of(context);
     final hMembers = FireStore.instance.prefs.highlight;
     final carSerial = (isCome ? data.serial.morning : data.serial.evening).toString();
 
     if (passenger == null) { return const SizedBox(); }
 
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-          decoration: BoxDecoration(
-            color: isCome ? Colors.yellow.shade800 : Colors.purple.shade800,
-            borderRadius: BorderRadius.circular(15),
+    return SizedBox(
+      width: constraints.maxWidth - 45,
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+            decoration: BoxDecoration(
+              color: isCome ? Colors.yellow.shade800 : Colors.purple.shade800,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20, color: Colors.white),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3, left: 3),
+                  child: Text(carSerial, style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white))
+                )
+              ]
+            )
           ),
-          child: Row(
-            children: [
-              Icon(isCome ? Icons.sunny : Icons.bedtime, size: 20, color: Colors.white),
-              Padding(
-                padding: const EdgeInsets.only(top: 3, left: 3),
-                child: Text(carSerial, style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white))
-              )
-            ]
-          )
-        ),
-        const SizedBox(width: 10),
-        SizedBox(
-          height: 34,
-          child: Wrap(
-            spacing: 5,
-            children: passenger.map((e) => Container(
-              padding: const EdgeInsets.fromLTRB(2.5, 2, 2.5, 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15)
-              ),
-              child: Text(e, style: theme.textTheme.titleLarge?.copyWith(
-                color: hMembers.contains(e) && highlight ? Colors.green : null
-              ))
-            )).toList()
-          )
-        )
-      ]
+          const SizedBox(width: 10),
+          ...passenger.map((e) => Container(
+            padding: const EdgeInsets.fromLTRB(2.5, 2, 2.5, 0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15)
+            ),
+            child: Text(e, style: theme.textTheme.titleLarge?.copyWith(
+              color: hMembers.contains(e) && highlight ? Colors.green : null
+            ))
+          ))
+        ]
+      )
     );
   }
 
@@ -219,30 +217,36 @@ class DataCard extends StatelessWidget {
       return const SizedBox();
     }
 
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: theme.inputDecorationTheme.fillColor!
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [Icon(Icons.directions_car_rounded)]
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          clipBehavior: Clip.hardEdge,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: theme.inputDecorationTheme.fillColor!
           ),
-          Column(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(" 第${data.order}車", style: theme.textTheme.titleMedium),
-              visMode<2 ? _personView(context, data.passenger.come, true) : const SizedBox(),
-              visMode%2==0 ? _personView(context, data.passenger.back, false) : const SizedBox()
+              const Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [Icon(Icons.directions_car_rounded)]
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(" 第${data.order}車", style: theme.textTheme.titleMedium),
+                  visMode<2 ? _personView(context, data.passenger.come, true, constraints) : const SizedBox(),
+                  visMode%2==0 ? _personView(context, data.passenger.back, false, constraints) : const SizedBox()
+                ]
+              )
             ]
           )
-        ]
-      )
+        );
+      },
     );
   }
 }

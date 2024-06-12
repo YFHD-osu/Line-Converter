@@ -39,7 +39,9 @@ class FullscreenTextBox extends StatelessWidget {
         child: ToolButtons(
           tag: '$heroTag-c',
           visibile: true, 
-          closeBtn: () => Navigator.of(context).pop(controller.text),
+          closeBtn: () {
+            Navigator.of(context).pop(controller.text);
+          },
           clipBtn: () async {
             final clipboard = SystemClipboard.instance;
             if (clipboard == null) {
@@ -98,8 +100,8 @@ class TextBox extends StatelessWidget {
   final String heroTag, hintText;
   final TextEditingController controller;
 
-  void onTap(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(
+  void onTap(BuildContext context) async {
+    await Navigator.push(context, MaterialPageRoute(
     builder: (context) => 
       FullscreenTextBox(
         heroTag: heroTag,
@@ -107,6 +109,7 @@ class TextBox extends StatelessWidget {
         onChanged: onChanged
       )
     ));
+    controller.text += " ";
   }
 
   String getOSInsideWeb() {
