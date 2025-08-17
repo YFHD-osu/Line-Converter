@@ -56,14 +56,13 @@ class _HomePageState extends State<HomePage> {
           Container(
             height: 40, width: 40,
             clipBehavior: Clip.hardEdge,
-            margin: const EdgeInsets.all(5),
+            margin: const EdgeInsets.only(left: 10, right: 5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.red
             ),
             child: Image.asset("assets/logo.png", fit: BoxFit.fitHeight)
           ),
-          const Text("車表轉換"),
+          const Text("車表轉換")
         ]
       ),
       actions: [
@@ -106,47 +105,43 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: _appBar()
-        ),
-        body: SizedBox.expand(
-          child: Column(
-            children: [
-              const SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ModeSwitch(
-                    onChange: (value) {
-                      _controller.animateToPage(
-                        value.index, 
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.easeInOut
-                      );
-                    }
-                  )
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: _appBar()
+      ),
+      body: SizedBox.expand(
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+              child: SizedBox(
+                width: double.infinity,
+                child: ModeSwitch(
+                  onChange: (value) {
+                    _controller.animateToPage(
+                      value.index, 
+                      duration: const Duration(milliseconds: 350),
+                      curve: Curves.easeInOut
+                    );
+                  }
                 )
-              ),
-              Expanded(
-                child: PageView(
-                  controller: _controller,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    DataView(key: morningKey, type: MessageType.morning),
-                    DataView(key: eveningKey, type: MessageType.evening),
-                  ]
-                ) 
               )
-            ]
-          )
+            ),
+            Expanded(
+              child: PageView(
+                controller: _controller,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  DataView(key: morningKey, type: MessageType.morning),
+                  DataView(key: eveningKey, type: MessageType.evening),
+                ]
+              ) 
+            )
+          ]
         )
       )
     );

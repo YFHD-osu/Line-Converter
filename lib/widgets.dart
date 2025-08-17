@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:super_clipboard/super_clipboard.dart';
-import 'package:universal_html/html.dart' as html;
+// import 'package:universal_html/html.dart' as html;
 
 class FullscreenTextBox extends StatelessWidget {
   final String heroTag;
@@ -18,10 +18,11 @@ class FullscreenTextBox extends StatelessWidget {
   });
 
   String _getOSInsideWeb() {
-    final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
-    if( userAgent.contains("iphone"))  return "ios";
-    if( userAgent.contains("ipad")) return "ios";
-    if( userAgent.contains("android"))  return "Android";
+    // TODO: migrate to web package
+    // final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
+    // if( userAgent.contains("iphone"))  return "ios";
+    // if( userAgent.contains("ipad")) return "ios";
+    // if( userAgent.contains("android"))  return "Android";
     return "Web";
    }
 
@@ -109,14 +110,14 @@ class TextBox extends StatelessWidget {
         onChanged: onChanged
       )
     ));
-    controller.text += " ";
   }
 
   String getOSInsideWeb() {
-    final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
-    if( userAgent.contains("iphone"))  return "ios";
-    if( userAgent.contains("ipad")) return "ios";
-    if( userAgent.contains("android"))  return "Android";
+    // TODO: migrate to web package
+    // final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
+    // if( userAgent.contains("iphone"))  return "ios";
+    // if( userAgent.contains("ipad")) return "ios";
+    // if( userAgent.contains("android"))  return "Android";
     return "Web";
    }
 

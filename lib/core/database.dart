@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:smartlogger/smartlogger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,10 +10,16 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:line_converter/core/typing.dart';
 import 'package:line_converter/core/extension.dart';
 
-class PrefsCache extends ChangeNotifier{
+class PrefsCache extends ChangeNotifier {
   String sheetTitle, credential, sheetID, highlight;
 
-  String? get clientEmail => jsonDecode(credential)["client_email"] as String?;
+  String get clientEmail {
+    try {
+      return jsonDecode(credential)["client_email"];
+    } catch (e) {
+      return "";
+    }
+  }
 
   PrefsCache({
     required this.credential,
@@ -31,15 +37,6 @@ class PrefsCache extends ChangeNotifier{
     );
   }
 
-  PrefsCache setMap(Map res) {
-    sheetTitle= res["sheet"]?["sheetTitle"]??"";
-    credential= res["sheet"]?["credential"]??"{}";
-    sheetID= res["sheet"]?["sheetID"]??"";
-    highlight = res["sheet"]?["highlight"]??"";
-    notifyListeners();
-    return this;
-  }
-
   Map<String, dynamic> toMap() {
     return {
       "sheetTitle": sheetTitle,
@@ -47,6 +44,15 @@ class PrefsCache extends ChangeNotifier{
       "sheetID": sheetID,
       "highlight": highlight
     };
+  }
+
+  PrefsCache setData(Map res) {
+    sheetTitle= res["sheet"]?["sheetTitle"]??"";
+    credential= res["sheet"]?["credential"]??"{}";
+    sheetID= res["sheet"]?["sheetID"]??"";
+    highlight = res["sheet"]?["highlight"]??"";
+    notifyListeners();
+    return this;
   }
 }
 
@@ -221,7 +227,7 @@ class FireStore {
     final response = await root.collection("prefs").get();
     var dataMap = { for (var e in response.docs) e.id: e.data() };
     
-    return prefs.setMap(dataMap);
+    return prefs.setData(dataMap);
   }
 
   Future setPrefs(PrefsCache? prefs) async {

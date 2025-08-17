@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:line_converter/core/database.dart';
 import 'package:line_converter/page/join.dart';
-import 'package:universal_html/html.dart' as html;
+// import 'package:universal_html/html.dart' as html;
 
 class DataViewPage extends StatefulWidget {
   final DataDocs res;
@@ -42,38 +42,42 @@ class _DataViewPageState extends State<DataViewPage> {
     );
   }
 
-  // late var screenShot = RepaintBoundary(
-  //   key: screenshotKey,
-  //   child: Builder(builder: (context) {
-  //     return Padding(
-  //       padding: const EdgeInsets.symmetric(horizontal: 10),
-  //       child: Column(
-  //         children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
-  //           Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 5),
-  //             child: DataCard(data: e, visMode: visMode, highlight: highlight)
-  //           )
-  //         ).toList() + <Widget>[const SizedBox(height: 5)]
-  //       )
-  //     );
-  //   })
-  // );
+  /*
+  late var screenShot = RepaintBoundary(
+    key: screenshotKey,
+    child: Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: DataCard(data: e, visMode: visMode, highlight: highlight)
+            )
+          ).toList() + <Widget>[const SizedBox(height: 5)]
+        )
+      );
+    })
+  );*/
 
   void _download(String base64, {String? filename}) {
      // Encode our file in base64
     // Create the link with the file
-    final anchor =
-      html.AnchorElement(href: 'data:application/octet-stream;base64,$base64')
-      ..target = 'blank';
 
-    // add the name
-    anchor.download = filename??anchor.download;
+    // TODO: migrate to web package
 
-    // trigger download
-    html.document.body!.append(anchor);
-    anchor.click();
-    anchor.remove();
-    return;
+    // final anchor =
+    //   html.AnchorElement(href: 'data:application/octet-stream;base64,$base64')
+    //   ..target = 'blank';
+
+    // // add the name
+    // anchor.download = filename??anchor.download;
+
+    // // trigger download
+    // html.document.body!.append(anchor);
+    // anchor.click();
+    // anchor.remove();
+    // return;
   }
 
   String _getFilename() {
@@ -92,13 +96,14 @@ class _DataViewPageState extends State<DataViewPage> {
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
       
-      // final bytes = await screenshotController.captureFromLongWidget(
-      //   InheritedTheme.captureAll(context, Material(child: screenShot)),
-      //   delay: const Duration(milliseconds: 100),
-      //   context: context,
-      //   constraints: const BoxConstraints(minWidth: 500),
-      //   pixelRatio: 5.0
-      // );
+      /*final bytes = await screenshotController.captureFromLongWidget(
+        InheritedTheme.captureAll(context, Material(child: screenShot)),
+        delay: const Duration(milliseconds: 100),
+        context: context,
+        constraints: const BoxConstraints(minWidth: 500),
+        pixelRatio: 5.0
+      );*/
+      
       base64 = base64Encode(pngBytes);
       widget.res.setBase64(visMode, highlight, base64);
       // FireStore.instance.setImage(widget.data);
