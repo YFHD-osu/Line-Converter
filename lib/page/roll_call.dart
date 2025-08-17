@@ -2,7 +2,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:googleapis/chat/v1.dart' as api;
 import 'package:line_converter/core/database.dart';
 
 class RollCall extends StatefulWidget {
@@ -22,7 +21,7 @@ class _RollCallState extends State<RollCall> {
       centerTitle: false,
       excludeHeaderSemantics: true,
       surfaceTintColor: theme.colorScheme.surfaceDim,
-      backgroundColor: theme.colorScheme.surfaceDim.withOpacity(0.75),
+      backgroundColor: theme.colorScheme.surfaceDim.withValues(alpha: 0.75),
       title: Row(
         children: [
           Container(
@@ -162,8 +161,8 @@ class _PersonCardState extends State<PersonCard> {
   
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final sideWidth = (mediaQuery.size.width - 30) * 0.5;
+    // final mediaQuery = MediaQuery.of(context);
+    // final sideWidth = (mediaQuery.size.width - 30) * 0.5;
 
     return SizedBox(
       child: Wrap(
@@ -179,8 +178,7 @@ class _PersonCardState extends State<PersonCard> {
           _personBox(),
           _personBox(),
           _personBox(),
-          _personBox(),
-          
+          _personBox()
         ]
       )
     );

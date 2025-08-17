@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       centerTitle: false,
       excludeHeaderSemantics: true,
       surfaceTintColor: theme.colorScheme.surfaceDim,
-      backgroundColor: theme.colorScheme.surfaceDim.withOpacity(0.75),
+      backgroundColor: theme.colorScheme.surfaceDim.withValues(alpha: 0.75),
       title: Row(
         children: [
           Container(
@@ -397,14 +397,14 @@ class _AccountDialogState extends State<AccountDialog> {
       ),
       actions: <Widget>[
         CupertinoButton(
-          minSize: 0,
+          minimumSize: Size(0 ,0),
           padding: EdgeInsets.zero,
           onPressed: () => setState(() => loginMode = false),
           child: const Text('註冊', style: TextStyle(color: Colors.green)),
         ),
         const SizedBox(width: 20),
         CupertinoButton(
-          minSize: 0,
+          minimumSize: Size(0 ,0),
           padding: EdgeInsets.zero,
           onPressed: _loginClick,
           child: const Text('登入', style: TextStyle(color: Colors.green)),
@@ -462,7 +462,7 @@ class _AccountDialogState extends State<AccountDialog> {
       ),
       actions: <Widget>[
         CupertinoButton(
-          minSize: 0,
+          minimumSize: Size(0 ,0),
           padding: EdgeInsets.zero,
           onPressed: _registerClick,
           child: const Text('註冊', style: TextStyle(color: Colors.green)),

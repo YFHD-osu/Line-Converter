@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+
+import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:line_converter/core/database.dart';
 import 'package:line_converter/page/join.dart';
-// import 'package:universal_html/html.dart' as html;
 
 class DataViewPage extends StatefulWidget {
   final DataDocs res;
@@ -42,42 +44,16 @@ class _DataViewPageState extends State<DataViewPage> {
     );
   }
 
-  /*
-  late var screenShot = RepaintBoundary(
-    key: screenshotKey,
-    child: Builder(builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: <Widget>[const SizedBox(height: 5)] + widget.res.data.map((e) => 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: DataCard(data: e, visMode: visMode, highlight: highlight)
-            )
-          ).toList() + <Widget>[const SizedBox(height: 5)]
-        )
-      );
-    })
-  );*/
-
   void _download(String base64, {String? filename}) {
-     // Encode our file in base64
-    // Create the link with the file
+    // Encode file in base64, and turn it to anchor download link
 
-    // TODO: migrate to web package
+    final anchor = web.HTMLAnchorElement()
+      ..href = 'data:application/octet-stream;base64,$base64'
+      ..download = filename ?? "Unknown.png";
 
-    // final anchor =
-    //   html.AnchorElement(href: 'data:application/octet-stream;base64,$base64')
-    //   ..target = 'blank';
-
-    // // add the name
-    // anchor.download = filename??anchor.download;
-
-    // // trigger download
-    // html.document.body!.append(anchor);
-    // anchor.click();
-    // anchor.remove();
-    // return;
+    // Trigger download
+    anchor.click();
+    return;
   }
 
   String _getFilename() {
@@ -123,7 +99,7 @@ class _DataViewPageState extends State<DataViewPage> {
       centerTitle: false,
       excludeHeaderSemantics: true,
       surfaceTintColor: theme.colorScheme.surface,
-      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
+      backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.75),
       title: const Text("詳細資料"),
       actions: [
         IconButton(

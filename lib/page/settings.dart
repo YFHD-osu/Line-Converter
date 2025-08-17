@@ -37,7 +37,7 @@ class _SettingPageState extends State<SettingPage> {
       centerTitle: false,
       excludeHeaderSemantics: true,
       surfaceTintColor: theme.colorScheme.surface,
-      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
+      backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.75),
       titleSpacing: 0,
       leadingWidth: 50,
       title: const Text("設定"),
@@ -331,7 +331,7 @@ class _SheetSectionState extends State<SheetSection> {
                   Text("服務帳號憑證", style: theme.textTheme.labelLarge),
                   SizedBox(
                     width: mediaQuery.size.width - 143.3,
-                    child: Text(FireStore.instance.prefs.clientEmail??"尚未設定",
+                    child: Text(FireStore.instance.prefs.clientEmail,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey,
                         overflow: TextOverflow.ellipsis
@@ -340,7 +340,7 @@ class _SheetSectionState extends State<SheetSection> {
                 ]
               ),
               CupertinoButton(
-                minSize: 0,
+                minimumSize: Size(0, 0),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 onPressed: () => _onCredential(navigator),
                 child: const Text("編輯", style: TextStyle(color: Colors.green))
@@ -363,7 +363,7 @@ class _SheetSectionState extends State<SheetSection> {
               ),
               const Spacer(),
               CupertinoButton(
-                minSize: 0,
+                minimumSize: Size(0, 0),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 onPressed: _onSheetTitle,
                 child: const Text("變更", style: TextStyle(color: Colors.green))
@@ -561,7 +561,7 @@ class HighLightSection extends StatelessWidget {
           ),
           const Spacer(),
           CupertinoButton(
-            minSize: 0,
+            minimumSize: Size(0 ,0),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             onPressed: () => _onCredential(Navigator.of(context)),
             child: const Text("變更", style: TextStyle(color: Colors.green))

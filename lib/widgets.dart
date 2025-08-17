@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:super_clipboard/super_clipboard.dart';
 // import 'package:universal_html/html.dart' as html;
@@ -16,15 +15,6 @@ class FullscreenTextBox extends StatelessWidget {
     required this.heroTag,
     this.onChanged
   });
-
-  String _getOSInsideWeb() {
-    // TODO: migrate to web package
-    // final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
-    // if( userAgent.contains("iphone"))  return "ios";
-    // if( userAgent.contains("ipad")) return "ios";
-    // if( userAgent.contains("android"))  return "Android";
-    return "Web";
-   }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +61,6 @@ class FullscreenTextBox extends StatelessWidget {
                   autofocus: true,
                   autocorrect: false,
                   controller: controller,
-                  contextMenuBuilder: (kIsWeb && _getOSInsideWeb() == "ios") ? (context, editableTextState) => const SizedBox() : null,
                   onChanged: onChanged,
                 )
               )
@@ -111,15 +100,6 @@ class TextBox extends StatelessWidget {
       )
     ));
   }
-
-  String getOSInsideWeb() {
-    // TODO: migrate to web package
-    // final userAgent = html.window.navigator.userAgent.toString().toLowerCase();
-    // if( userAgent.contains("iphone"))  return "ios";
-    // if( userAgent.contains("ipad")) return "ios";
-    // if( userAgent.contains("android"))  return "Android";
-    return "Web";
-   }
 
   @override
   Widget build(BuildContext context) {

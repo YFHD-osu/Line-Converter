@@ -18,7 +18,7 @@ class JoinPage extends StatefulWidget {
 
 class _JoinPageState extends State<JoinPage> {
   final parser = MainPraser();
-  final controller = ExpansionTileController();
+  final controller = ExpansibleController();
 
   void _doParser(String? value) {
     parser.parse(person: personText.text, carID: carIDText.text);
@@ -42,7 +42,7 @@ class _JoinPageState extends State<JoinPage> {
       centerTitle: false,
       excludeHeaderSemantics: true,
       surfaceTintColor: theme.colorScheme.surface,
-      backgroundColor: theme.colorScheme.surface.withOpacity(0.75),
+      backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.75),
       titleSpacing: 0,
       leadingWidth: 50,
       title: const Text("加入資料"),
@@ -82,7 +82,7 @@ class _JoinPageState extends State<JoinPage> {
 class InputSection extends StatelessWidget {
 
   final Function(String) onChanged;
-  final ExpansionTileController controller;
+  final ExpansibleController controller;
 
   const InputSection({
     super.key,
